@@ -1,0 +1,12 @@
+<?php
+
+get_header();
+
+while (have_posts()):
+
+    the_post();
+    $page = get_post();
+
+endwhile;
+
+get_footer();

@@ -1,0 +1,118 @@
+<?php
+
+$labels = [
+	'name' => __('{{post_type.labels.name}}', '{{theme.slug}}'),
+	'singular_name' => __('{{post_type.labels.singular_name}}', '{{theme.slug}}'),
+	'add_new' => __('{{post_type.labels.add_new}}', '{{theme.slug}}'),
+	'add_new_item' => __('{{post_type.labels.add_new_item}}', '{{theme.slug}}'),
+	'edit_item' => __('{{post_type.labels.edit_item}}', '{{theme.slug}}'),
+	'new_item' => __('{{post_type.labels.new_item}}', '{{theme.slug}}'),
+	'view_item' => __('{{post_type.labels.view_item}}', '{{theme.slug}}'),
+	'view_items' => __('{{post_type.labels.view_items}}', '{{theme.slug}}'),
+	'search_items' => __('{{post_type.labels.search_items}}', '{{theme.slug}}'),
+	'not_found' => __('{{post_type.labels.not_found}}', '{{theme.slug}}'),
+	'not_found_in_trash' => __('{{post_type.labels.not_found_in_trash}}', '{{theme.slug}}'),
+	'parent_item_colon' => __('{{post_type.labels.parent_item_colon}}', '{{theme.slug}}'),
+	'all_items' => __('{{post_type.labels.all_items}}', '{{theme.slug}}'),
+	'archives' => __('{{post_type.labels.archives}}', '{{theme.slug}}'),
+	'attributes' => __('{{post_type.labels.attributes}}', '{{theme.slug}}'),
+	'insert_into_item' => __('{{post_type.labels.insert_into_item}}', '{{theme.slug}}'),
+	'uploaded_to_this_item' => __('{{post_type.labels.uploaded_to_this_item}}', '{{theme.slug}}'),
+	'menu_name' => __('{{post_type.labels.menu_name}}', '{{theme.slug}}'),
+];
+
+$options = [
+	'menu_position' => {{post_type.settings.menu_position}},
+	'supports' => ['title', 'editor', 'thumbnail', 'page-attributes'],
+	'has_archive' => {{#post_type.settings.has_archive}}TRUE{{/post_type.settings.has_archive}}{{^post_type.settings.has_archive}}FALSE{{/post_type.settings.has_archive}},
+	'show_in_nav_menus' => {{#post_type.settings.show_in_nav_menus}}TRUE{{/post_type.settings.show_in_nav_menus}}{{^post_type.settings.show_in_nav_menus}}FALSE{{/post_type.settings.show_in_nav_menus}},
+	'public' => {{#post_type.settings.public}}TRUE{{/post_type.settings.public}}{{^post_type.settings.public}}FALSE{{/post_type.settings.public}},
+	'rewrite' => ['slug' => '{{post_type.slug}}', 'with_front' => FALSE],
+	'capability_type' => '{{post_type.settings.capability_type}}',
+	'labels' => $labels,
+    {{#post_type.hasMeta}}'register_meta_box_cb' => '{{theme.id}}_{{post_type.id}}_meta_boxes'{{/post_type.hasMeta}}
+];
+
+register_post_type('{{post_type.slug}}', $options);
+
+{{#post_type.hasMeta}}
+function {{theme.id}}_{{post_type.id}}_meta_boxes()
+{
+    {{#post_type.metas}}
+    add_meta_box('{{post_type.id}}_{{id}}', '{{name}}', '{{theme.id}}_{{post_type.id}}_{{id}}_box', '{{post_type.slug}}', '{{position}}', 'default');
+    {{/post_type.metas}}
+}
+
+{{#post_type.metas}}
+function {{theme.id}}_{{post_type.id}}_{{id}}_box($post)
+{
+    $content = get_post_meta($post->ID, '{{id}}', true);
+    {{#isString}}
+    {{> meta-single}}
+    {{/isString}}
+}
+
+{{/post_type.metas}}
+{{/post_type.hasMeta}}
+function {{theme.id}}_{{post_type.id}}_save($post_id)
+{
+    {{#post_type.metas}}
+    ${{post_type.id}}_{{id}} = $_POST['{{post_type.slug}}']['{{slug}}'];
+    update_post_meta($post_id, '{{id}}', ${{post_type.id}}_{{id}});
+    {{/post_type.metas}}
+}
+{{#post_type.hasMetaInColumns}}
+
+add_filter('manage_{{post_type.id}}_posts_columns', '{{theme.id}}_{{post_type.id}}_table_head');
+add_action('manage_{{post_type.id}}_posts_custom_column', '{{theme.id}}_{{post_type.id}}_table_content', 10, 2);
+add_filter('manage_edit-{{post_type.id}}_sortable_columns', '{{theme.id}}_{{post_type.id}}_table_sorting');
+
+function {{theme.id}}_{{post_type.id}}_table_head($defaults)
+{
+    {{#post_type.metas}}
+    {{#hasColumn}}
+    $defaults['{{post_type.id}}_{{id}}']  = __('{{name}}', '{{theme.slug}}');
+    {{/hasColumn}}
+    {{/post_type.metas}}
+    return $defaults;
+}
+
+function {{theme.id}}_{{post_type.id}}_table_content($column_name, $post_id)
+{
+    {{#post_type.metas}}
+    {{#hasColumn}}
+    if ($column_name == '{{post_type.id}}_{{id}}') {
+        ${{post_type.id}}_{{id}} = get_post_meta($post_id, '{{id}}', true);
+        echo ${{post_type.id}}_{{id}};
+    }
+    {{/hasColumn}}
+    {{/post_type.metas}}
+}
+
+function {{theme.id}}_{{post_type.id}}_table_sorting($columns)
+{
+    {{#post_type.metas}}
+    {{#hasColumn}}
+    $columns['{{post_type.id}}_{{id}}']  = '{{post_type.id}}_{{id}}';
+    {{/hasColumn}}
+    {{/post_type.metas}}
+    return $columns;
+}
+{{#post_type.metas}}
+{{#hasColumn}}
+
+add_filter('request', '{{theme.id}}_{{post_type.id}}_{{id}}_column_orderby');
+
+function {{theme.id}}_{{post_type.id}}_{{id}}_column_orderby($vars)
+{
+    if (isset($vars['orderby']) && '{{post_type.id}}_{{id}}' == $vars['orderby']) {
+        $vars = array_merge($vars, [
+            'meta_key' => '{{id}}',
+            'orderby' => 'meta_value'
+        ]);
+    }
+    return $vars;
+}
+{{/hasColumn}}
+{{/post_type.metas}}
+{{/post_type.hasMetaInColumns}}

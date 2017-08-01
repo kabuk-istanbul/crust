@@ -1,0 +1,36 @@
+const gulp = require('gulp');
+const uglifyCSS = require('gulp-uglifycss');
+const uglify = require('gulp-uglify');
+const webpack = require('webpack-stream');
+const {{theme.settings.front_end_tools.css_preprocessor}} = require('gulp-{{theme.settings.front_end_tools.css_preprocessor}}');
+
+gulp.task('{{theme.settings.front_end_tools.css_preprocessor}}', function () {
+	return gulp.src('./src/{{theme.settings.front_end_tools.css_preprocessor_file_extension}}/style.{{theme.settings.front_end_tools.css_preprocessor_file_extension}}')
+		.pipe({{theme.settings.front_end_tools.css_preprocessor}}())
+		.pipe(uglifyCSS())
+		.pipe(gulp.dest('./'));
+});
+
+gulp.task('js', function () {
+	gulp.src('./src/js/{{theme.slug}}.js')
+		.pipe(webpack(require('./webpack.config.js')))
+		.pipe(uglify())
+		.pipe(gulp.dest('./js'));
+});
+
+gulp.task('images', function () {
+	gulp.src('./src/img/**/*')
+		.pipe(gulp.dest('./img'));
+});
+
+gulp.task('fonts', function () {
+	gulp.src('./src/font/**/*')
+		.pipe(gulp.dest('./font'));
+});
+
+gulp.task('default', ['{{theme.settings.front_end_tools.css_preprocessor}}',  'js', 'images', 'fonts'], function () {
+	gulp.watch('src/{{theme.settings.front_end_tools.css_preprocessor_file_extension}}/**/*', ['stylus']);
+	gulp.watch('src/js/**/*', ['js']);
+	gulp.watch('src/img/**/*', ['images']);
+	gulp.watch('src/fonts/**/*', ['fonts']);
+});

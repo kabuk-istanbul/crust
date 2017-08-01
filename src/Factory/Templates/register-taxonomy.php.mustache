@@ -1,0 +1,37 @@
+<?php
+
+$labels = [
+	'name' => __('{{taxonomy.labels.name}}', '{{theme.slug}}'),
+    'singular_name' => __('{{taxonomy.labels.singular_name}}', '{{theme.slug}}'),
+    'menu_name' => __('{{taxonomy.labels.menu_name}}', '{{theme.slug}}'),
+    'all_items' => __('{{taxonomy.labels.all_items}}', '{{theme.slug}}'),
+    'edit_item' => __('{{taxonomy.labels.edit_item}}', '{{theme.slug}}'),
+    'view_item' => __('{{taxonomy.labels.view_item}}', '{{theme.slug}}'),
+    'update_item' => __('{{taxonomy.labels.update_item}}', '{{theme.slug}}'),
+    'add_new_item' => __('{{taxonomy.labels.add_new_item}}', '{{theme.slug}}'),
+    'new_item_name' => __('{{taxonomy.labels.new_item_name}}', '{{theme.slug}}'),
+    'parent_item' => __('{{taxonomy.labels.parent_item}}', '{{theme.slug}}'),
+    'parent_item_colon' => __('{{taxonomy.labels.parent_item_colon}}', '{{theme.slug}}'),
+    'search_items' => __('{{taxonomy.labels.search_items}}', '{{theme.slug}}'),
+    'popular_items' => __('{{taxonomy.labels.popular_items}}', '{{theme.slug}}'),
+    'separate_items_with_commas' => __('{{taxonomy.labels.separate_items_with_commas}}', '{{theme.slug}}'),
+    'add_or_remove_items' => __('{{taxonomy.labels.add_or_remove_items}}', '{{theme.slug}}'),
+    'choose_from_most_used' => __('{{taxonomy.labels.choose_from_most_used}}', '{{theme.slug}}'),
+    'not_found' => __('{{taxonomy.labels.not_found}}', '{{theme.slug}}'),
+];
+
+$options = [
+    'hierarchical' => FALSE,
+    'show_ui' => TRUE,
+    'show_admin_column' => TRUE,
+    'update_count_callback' => '_update_post_term_count',
+    'query_var' => TRUE,
+    'rewrite' => ['slug' => __('{{taxonomy.slug}}', '{{theme.slug}}')],
+    'labels' => $labels
+];
+
+register_taxonomy('{{taxonomy.slug}}', $options);
+
+{{#post_types}}
+register_taxonomy_for_object_type('{{taxonomy.slug}}', '{{slug}}');
+{{/post_types}}
