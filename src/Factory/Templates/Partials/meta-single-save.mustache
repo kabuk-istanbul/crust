@@ -1,0 +1,7 @@
+$meta = $_POST['{{postType.slug}}']['{{slug}}'];
+{{#isKeyValue}}
+update_post_meta($post_id, '{{id}}', $meta['key'] . '[:]' . $meta['value']);
+{{/isKeyValue}}
+{{^isKeyValue}}
+update_post_meta($post_id, '{{id}}', $meta);
+{{/isKeyValue}}

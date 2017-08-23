@@ -1,6 +1,6 @@
 <?php
 
-namespace Cruster\Helpers;
+namespace Crust\Helpers;
 
 class Klasor
 {

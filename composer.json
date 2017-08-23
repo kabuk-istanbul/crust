@@ -1,0 +1,20 @@
+{
+    "name": "kabuk/crust",
+    "description": "WP theme generation library.",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "symfony/console": "3.3.6",
+        "symfony/event-dispatcher": "3.3.6",
+        "symfony/process": "3.3.6",
+        "doctrine/inflector": "1.2.0",
+        "danielstjules/stringy": "3.1.0",
+        "mustache/mustache": "2.9.0",
+        "symfony/filesystem": "3.3.6"
+    },
+    "autoload": {
+        "psr-4": {
+            "Crust\\": "src/"
+        }
+    }
+}

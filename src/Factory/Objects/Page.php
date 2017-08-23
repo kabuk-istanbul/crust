@@ -1,8 +1,7 @@
 <?php
 
-namespace Cruster\Factory\Objects;
+namespace Crust\Factory\Objects;
 
-use Doctrine\Common\Inflector\Inflector;
 use Stringy\StaticStringy as Stringy;
 
 class Page

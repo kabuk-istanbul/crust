@@ -1,9 +1,9 @@
 <?php
 
-namespace Cruster\Console;
+namespace Crust\Console;
 
-use Cruster\Cruster;
-use Cruster\Helpers\Klasor;
+use Crust\Crust;
+use Crust\Helpers\Klasor;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -13,6 +13,7 @@ class InstallWordpressCommand extends Command
 {
     private $progressBar;
     private $currentStep = 0;
+    private $scope;
 
     protected function configure()
     {
@@ -23,21 +24,19 @@ class InstallWordpressCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        Cruster::init();
-        Cruster::setOutput($output);
-        Cruster::setInput($input);
+        $this->scope = new Crust($input, $output);
         $this->downloadWP();
         $this->extractWP();
     }
 
     protected function downloadWP()
     {
-        $wp_zip_file = Cruster::TEMP_DIR . '/latest.zip';
+        $wp_zip_file = Crust::TEMP_DIR . '/latest.zip';
 
-        if (!Cruster::fs()->exists($wp_zip_file)) {
+        if (!$this->scope->fs->exists($wp_zip_file)) {
 
-            Cruster::getOutput()->writeln('<title>Downloading Wordpress</title>');
-            $this->progressBar = Cruster::progressBar();
+            $this->scope->output->writeln('<title>Downloading Wordpress</title>');
+            $this->progressBar = $this->scope->progressBar();
             $this->progressBar->setMessage('Starting');
             $this->progressBar->start();
 
@@ -57,19 +56,18 @@ class InstallWordpressCommand extends Command
 
     protected function downloading($resource, $downloadSize, $downloaded, $uploadSize, $uploaded)
     {
-        $step = floor($downloaded / $downloadSize * 100);
-
         if ($downloadSize == 0) {
             $this->progressBar->setMessage('Connecting');
         }
         else {
             $this->progressBar->setMessage('Downloading');
+            $step = floor($downloaded / $downloadSize * 100);
             if ($step != $this->currentStep) {
                 $this->currentStep = $step;
                 if ($this->currentStep == 100) {
                     $this->progressBar->setMessage('<success>Downloaded</success>');
                     $this->progressBar->finish();
-                    Cruster::getOutput()->writeln('');
+                    $this->scope->output->writeln('');
                 }
                 else {
                     $this->progressBar->advance();
@@ -80,21 +78,21 @@ class InstallWordpressCommand extends Command
 
     protected function extractWP()
     {
-        Cruster::getOutput()->write('Extracting files');
+        $this->scope->output->write('Extracting files');
 
-        $wp_zip_file = Cruster::TEMP_DIR . '/latest.zip';
+        $wp_zip_file = Crust::TEMP_DIR . '/latest.zip';
 
         $zip = new ZipArchive();
         if ($zip->open($wp_zip_file)) {
-            $zip->extractTo(Cruster::TEMP_DIR);
+            $zip->extractTo(Crust::TEMP_DIR);
             $zip->close();
 
-            if (Klasor::copyDirContents(Cruster::TEMP_DIR . '/wordpress', './')) {
-                Cruster::getOutput()->writeln(' <success>✓</success>');
+            if (Klasor::copyDirContents(Crust::TEMP_DIR . '/wordpress', './')) {
+                $this->scope->output->writeln(' <success>✓</success>');
             }
         }
         else {
-            Cruster::getOutput()->writeln('<error>Cannot extract zip file.</error>');
+            $this->scope->output->writeln('<error>Cannot extract zip file.</error>');
         }
     }
 }

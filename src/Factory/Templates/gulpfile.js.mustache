@@ -12,7 +12,7 @@ gulp.task('{{theme.settings.front_end_tools.css_preprocessor}}', function () {
 });
 
 gulp.task('js', function () {
-	gulp.src('./src/js/{{theme.slug}}.js')
+	gulp.src('./src/js/theme.js')
 		.pipe(webpack(require('./webpack.config.js')))
 		.pipe(uglify())
 		.pipe(gulp.dest('./js'));

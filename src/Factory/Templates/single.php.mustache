@@ -5,10 +5,7 @@ get_header();
 while (have_posts()):
 
     the_post();
-    ${{post_type.id}} = get_post();
-    {{#metas}}
-    ${{post_type.id}}_{{id}} = get_post_meta($post->ID, '{{id}}', true);
-    {{/metas}}
+    $post = get_post();
 
 endwhile;
 

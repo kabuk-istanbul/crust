@@ -1,40 +1,41 @@
 <?php
 
-namespace Cruster\Console;
+namespace Crust\Console;
 
-use Cruster\Cruster;
+use Crust\Crust;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class InitCommand extends Command
 {
+    private $scope;
+
     protected function configure()
     {
         $this
             ->setName('init')
-            ->setDescription('Init cruster.');
+            ->setDescription('Init Crust.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        Cruster::init();
-        Cruster::setIO($input, $output);
+        $this->scope = new Crust($input, $output);
         $this->createFilesAndFolders();
     }
 
     private function createFilesAndFolders()
     {
-        if (!Cruster::getFs()->exists('./crust-file.php')) {
-            Cruster::getFs()->touch('./crust-file.php');
+        if (!file_exists('./crust-file.php')) {
+            touch('./crust-file.php');
         }
 
-        if (!Cruster::getFs()->exists('./.cruster')) {
-            Cruster::getFs()->mkdir('./.cruster');
+        if (!file_exists('./.Crust')) {
+            mkdir('./.Crust');
         }
 
-        if (!Cruster::getFs()->exists('./.cruster/tmp')) {
-            Cruster::getFs()->mkdir('./.cruster/tmp');
+        if (file_exists('./.Crust/tmp')) {
+            mkdir('./.Crust/tmp');
         }
     }
 }

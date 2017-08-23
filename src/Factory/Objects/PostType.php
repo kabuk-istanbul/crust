@@ -1,6 +1,6 @@
 <?php
 
-namespace Cruster\Factory\Objects;
+namespace Crust\Factory\Objects;
 
 use Doctrine\Common\Inflector\Inflector;
 use Stringy\StaticStringy as Stringy;
@@ -88,14 +88,29 @@ class PostType
         return $this;
     }
 
+    public function createFiles()
+    {
+        $tpl = file_get_contents(__DIR__ . '/../Templates/single-post-type.php.mustache');
+        $render = $this->theme->scope->renderer->render($tpl, array('postType' => $this));
+        file_put_contents($this->theme->dir() . '/single-' . $this->slug . '.php', $render);
+
+        $tpl = file_get_contents(__DIR__ . '/../Templates/archive-post-type.php.mustache');
+        $render = $this->theme->scope->renderer->render($tpl, array('postType' => $this));
+        file_put_contents($this->theme->dir() . '/archive-' . $this->slug . '.php', $render);
+
+        $tpl = file_get_contents(__DIR__ . '/../Templates/register-post-type.php.mustache');
+        $render = $this->theme->scope->renderer->render($tpl, array('postType' => $this));
+        file_put_contents($this->theme->dir() . '/inc/post-type-' . $this->slug . '.php', $render);
+    }
+
     private function initSettings($settings)
     {
         $defaultSettings = [
             'menu_position' => 5,
-            'supports' => array('title', 'editor', 'thumbnail'),
+            'supports' => ['title', 'editor', 'thumbnail'],
             'has_archive' => true,
             'public' => true,
-            'rewrite' => array('slug' => $this->slug, 'with_front' => false),
+            'rewrite' => ['slug' => $this->slug, 'with_front' => false],
             'capability_type' => 'post'
         ];
 

@@ -4,7 +4,6 @@ add_action('after_switch_theme', '{{theme.id}}_switch');
 add_action('after_setup_theme', '{{theme.id}}_setup');
 add_action('init', '{{theme.id}}_init');
 add_action('wp_enqueue_scripts', '{{theme.id}}_enqueue_style_and_scripts');
-//add_action('add_meta_boxes','{{theme.id}}_add_meta_boxes');
 add_action('save_post', '{{theme.id}}_save_post');
 add_filter('image_size_names_choose', '{{theme.id}}_custom_image_sizes');
 add_filter('wpseo_opengraph_image_size', '{{theme.id}}_opengraph_image_size');
@@ -20,8 +19,8 @@ function {{theme.id}}_setup()
         'footer-menu' => __('Footer Menu', '{{theme.slug}}')
     ]);
 
-    //  {{theme.id}}_disable_wp_emojicons()
-    //  show_admin_bar(false);
+    //{{theme.id}}_disable_wp_emojicons();
+    //show_admin_bar(false);
 }
 
 function {{theme.id}}_init()
@@ -37,19 +36,12 @@ function {{theme.id}}_enqueue_style_and_scripts()
 
 function {{theme.id}}_include_customs()
 {
-    {{#postTypes}}
+    {{#theme.postTypes}}
     require_once get_template_directory() . '/inc/post-type-{{slug}}.php';
-    {{/postTypes}}
-    {{#taxonomies}}
+    {{/theme.postTypes}}
+    {{#theme.taxonomies}}
     require_once get_template_directory() . '/inc/taxonomy-{{slug}}.php';
-    {{/taxonomies}}
-}
-
-function {{theme.id}}_add_meta_boxes()
-{
-    {{#postTypes}}
-    {{theme.id}}_{{id}}_meta_boxes();
-    {{/postTypes}}
+    {{/theme.taxonomies}}
 }
 
 function {{theme.id}}_custom_image_sizes($sizes)

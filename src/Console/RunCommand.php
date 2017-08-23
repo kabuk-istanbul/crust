@@ -1,8 +1,8 @@
 <?php
 
-namespace Cruster\Console;
+namespace Crust\Console;
 
-use Cruster\Cruster;
+use Crust\Crust;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -15,28 +15,21 @@ class RunCommand extends Command
         $this
             ->setName('run')
             ->setDescription('Executes crust-file.php')
-            ->addArgument('method', InputArgument::OPTIONAL, 'Command name in crust-file');
+            ->addArgument('method', InputArgument::OPTIONAL, 'Command name in crust-file', 'default');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        Cruster::$output = $output;
-        Cruster::$input = $input;
+        $crust = new Crust($input, $output);
 
         if (!file_exists('crust-file.php')) {
-            Cruster::error('crust-file.php doesn\'t exist!');
+            //Crust::error('crust-file.php doesn\'t exist!');
             return;
         }
 
         require_once './crust-file.php';
 
-        if ($input->getArgument('method')) {
-            $command = 'crust_' . $input->getArgument('method');
-        }
-        else {
-            $command = 'crust';
-        }
-
-        $command();
+        $command = 'crust_' . $input->getArgument('method');
+        $command($crust);
     }
 }

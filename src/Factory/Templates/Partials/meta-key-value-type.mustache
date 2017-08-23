@@ -1,0 +1,26 @@
+$meta = get_post_meta($post->ID, '{{id}}', {{isSingle}});
+
+echo '<table style="width: 100%;"><tbody>';
+
+{{#isSingle}}
+$property = explode('[:]', $meta);
+echo '<tr>' .
+    '<td><input name="{{postType.slug}}[{{slug}}][key]" type="text" style="width: 100%;" value="' . $property[0] . '" /></td>' .
+    '<td><input name="{{postType.slug}}[{{slug}}][value]" type="text" style="width: 100%;" value="' . $property[1] . '" /></td>' .
+    '</tr>';
+{{/isSingle}}
+{{^isSingle}}
+foreach ($meta as $meta_item) {
+    $property = explode('[:]', $meta_item);
+    echo '<tr>' .
+        '<td><input name="{{postType.slug}}[{{slug}}][key][]" type="text" style="width: 100%;" value="' . $property[0] . '" /></td>' .
+        '<td><input name="{{postType.slug}}[{{slug}}][value][]" type="text" style="width: 100%;" value="' . $property[1] . '" /></td>' .
+        '</tr>';
+}
+echo '<tr>' .
+    '<td><input name="{{postType.slug}}[{{slug}}][key][]" type="text" style="width: 100%;" placeholder="' . __('New Key', '{{theme.slug}}') . '" /></td>' .
+    '<td><input name="{{postType.slug}}[{{slug}}][value][]" type="text" style="width: 100%;" placeholder="' . __('New Value', '{{theme.slug}}') . '" /></td>' .
+    '</tr>';
+{{/isSingle}}
+
+echo '</tbody></table>';

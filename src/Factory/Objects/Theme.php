@@ -1,23 +1,9 @@
 <?php
 
-namespace Cruster\Factory\Objects;
+namespace Crust\Factory\Objects;
 
-use Cruster\Cruster;
-use Cruster\Factory\Files\ArchivePostFile;
-use Cruster\Factory\Files\FooterFile;
-use Cruster\Factory\Files\FunctionsFile;
-use Cruster\Factory\Files\GulpFile;
-use Cruster\Factory\Files\HeaderFile;
-use Cruster\Factory\Files\JSFile;
-use Cruster\Factory\Files\LanguageFile;
-use Cruster\Factory\Files\PackageJsonFile;
-use Cruster\Factory\Files\PageFile;
-use Cruster\Factory\Files\PostTypeFile;
-use Cruster\Factory\Files\SinglePostFile;
-use Cruster\Factory\Files\StyleFile;
-use Cruster\Factory\Files\TaxonomyFile;
-use Cruster\Factory\Files\WebpackConfigFile;
-use Cruster\Helpers\Klasor;
+use Crust\Crust;
+use Crust\Helpers\Klasor;
 use Stringy\StaticStringy as Stringy;
 
 class Theme
@@ -25,6 +11,7 @@ class Theme
     public $id;
     public $name;
     public $slug;
+    public $scope;
 
     protected $settings = [];
     protected $postTypes = [];
@@ -42,7 +29,7 @@ class Theme
 
     public function dir()
     {
-        return Cruster::WP_DIR . '/wp-content/themes/' . $this->slug;
+        return Crust::WP_DIR . '/wp-content/themes/' . $this->slug;
     }
 
     public function settings($name = null)
@@ -70,8 +57,9 @@ class Theme
 
     public function addPostType(PostType $postType)
     {
-        if (empty($this->postTypes[$postType->id])) {
-            $this->postTypes[$postType->id] = $postType;
+        if (!$this->hasPostType($postType->id)) {
+            $this->postTypes[] = $postType;
+            $postType->theme = $this;
 
             $taxonomies = $postType->taxonomies();
             foreach ($taxonomies as $id => $taxonomy) {
@@ -81,15 +69,36 @@ class Theme
         return $this;
     }
 
+    public function hasPostType($key)
+    {
+        foreach ($this->postTypes as $postType) {
+            if ($postType->id == $key || $postType->name == $key || $postType->slug == $key) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public function taxonomies()
     {
         return $this->taxonomies;
     }
 
+    public function hasTaxonomy($key)
+    {
+        foreach ($this->taxonomies as $taxonomy) {
+            if ($taxonomy->id == $key || $taxonomy->name == $key || $taxonomy->slug == $key) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public function addTaxonomy(Taxonomy $taxonomy)
     {
-        if (empty($this->taxonomies[$taxonomy->id])) {
-            $this->taxonomies[$taxonomy->id] = $taxonomy;
+        if (!$this->hasTaxonomy($taxonomy->id)) {
+            $this->taxonomies[] = $taxonomy;
+            $taxonomy->theme = $this;
 
             $postTypes = $taxonomy->postTypes();
             foreach ($postTypes as $id => $postType) {
@@ -126,8 +135,13 @@ class Theme
     {
         $this->createThemeFiles();
         $this->createPostTypeFiles();
-        //$this->createTaxonomyFiles();
+        $this->createTaxonomyFiles();
         //$this->createLanguageFiles();
+    }
+
+    public function setScope(Crust $crust)
+    {
+        $this->scope = $crust;
     }
 
     private function initSettings($settings = [])
@@ -157,7 +171,6 @@ class Theme
     private function createThemeFiles()
     {
         $this->createDir();
-        $this->createFunctionsFile();
         $this->createBaseFiles();
         $this->createFrontEndFiles();
     }
@@ -171,30 +184,25 @@ class Theme
         copy(__DIR__ . '/../../screenshot.png', $this->dir() . '/screenshot.png');
     }
 
-    private function createFunctionsFile()
+    private function renderFile($dir)
     {
-        $functionsFile = new FunctionsFile($this);
-        $functionsFile->create();
+        $fileName = basename($dir);
+
+        $tpl = file_get_contents(__DIR__ . '/../Templates/' . $fileName . '.mustache');
+        $render = $this->scope->renderer->render($tpl, array('theme' => $this));
+        file_put_contents($dir, $render);
     }
 
     private function createBaseFiles() {
-        $headerFile = new HeaderFile($this);
-        $headerFile->create();
-
-        $footerFile = new FooterFile($this);
-        $footerFile->create();
-
-        $singleFile = new SinglePostFile($this, new PostType('Post', []));
-        $singleFile->create();
-
-        $pageFile = new PageFile($this, new Page('Page', []));
-        $pageFile->create();
-
-        $frontPageFile = new PageFile($this, new Page('Front', []));
-        $frontPageFile->create();
-
-        touch($this->dir() . DIRECTORY_SEPARATOR . 'index.php');
-        touch($this->dir() . DIRECTORY_SEPARATOR . '404.php');
+        $this->renderFile($this->dir() . '/functions.php');
+        $this->renderFile($this->dir() . '/header.php');
+        $this->renderFile($this->dir() . '/footer.php');
+        $this->renderFile($this->dir() . '/single.php');
+        $this->renderFile($this->dir() . '/archive.php');
+        $this->renderFile($this->dir() . '/page.php');
+        $this->renderFile($this->dir() . '/front-page.php');
+        $this->renderFile($this->dir() . '/404.php');
+        $this->renderFile($this->dir() . '/index.php');
     }
 
     private function createFrontEndFiles()
@@ -204,42 +212,26 @@ class Theme
         Klasor::mkdir($this->dir() . '/src/js');
         Klasor::mkdir($this->dir() . '/src/img');
         Klasor::mkdir($this->dir() . '/src/svg');
+        Klasor::mkdir($this->dir() . '/src/fonts');
 
-        $styleFile = new StyleFile($this);
-        $styleFile->create();
-
-        $jsFile = new JSFile($this);
-        $jsFile->create();
-
-        $gulpFile = new GulpFile($this);
-        $gulpFile->create();
-
-        $packageJsonFile = new PackageJsonFile($this);
-        $packageJsonFile->create();
-
-        $webpackConfigFile = new WebpackConfigFile($this);
-        $webpackConfigFile->create();
+        $this->renderFile($this->dir() . '/style.css');
+        $this->renderFile($this->dir() . '/src/js/theme.js');
+        $this->renderFile($this->dir() . '/gulpfile.js');
+        $this->renderFile($this->dir() . '/package.json');
+        $this->renderFile($this->dir() . '/webpack.config.js');
     }
 
     private function createPostTypeFiles()
     {
         foreach ($this->postTypes as $id => $postType) {
-            $postTypeFile = new PostTypeFile($this, $postType);
-            $postTypeFile->create();
-
-            $singlePostFile = new SinglePostFile($this, $postType);
-            $singlePostFile->create();
-
-            $archivePostFile = new ArchivePostFile($this, $postType);
-            $archivePostFile->create();
+            $postType->createFiles();
         }
     }
 
     private function createTaxonomyFiles()
     {
         foreach ($this->taxonomies as $taxonomy) {
-            $taxonomyFile = new TaxonomyFile($this, $taxonomy);
-            $taxonomyFile->create();
+            $taxonomy->createFiles();
         }
     }
 

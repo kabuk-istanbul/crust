@@ -1,19 +1,10 @@
 <?php
 
-namespace Cruster\Factory\Objects;
+namespace Crust\Factory\Objects;
 
 use Stringy\StaticStringy as Stringy;
 
 class Meta {
-
-    const SINGLE = 1;
-    const MULTIPLE = 2;
-
-    const STRING_TYPE = 1;
-    const BOOLEAN_TYPE = 2;
-    const DATE_TYPE = 3;
-    const ARRAY_TYPE = 4;
-    const POST_TYPE = 5;
 
     public $id;
     public $name;
@@ -34,7 +25,7 @@ class Meta {
     function initSettings($settings)
     {
         $defaultSettings = [
-            'type' => Meta::STRING_TYPE,
+            'type' => 'string', // number, key_value
             'single' => true,
             'position' => 'advanced',
             'has_column' => false,
@@ -54,6 +45,11 @@ class Meta {
         return $this->settings['has_column'];
     }
 
+    function isSingle()
+    {
+        return (int) $this->settings['single'];
+    }
+
     function source()
     {
         return Stringy::slugify($this->settings['source']);
@@ -61,6 +57,11 @@ class Meta {
 
     function isString()
     {
-        return $this->settings['type'] == Meta::STRING_TYPE;
+        return $this->settings['type'] == 'string';
+    }
+
+    function isKeyValue()
+    {
+        return $this->settings['type'] == 'key_value';
     }
 }

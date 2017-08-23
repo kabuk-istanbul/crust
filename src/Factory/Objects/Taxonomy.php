@@ -1,10 +1,8 @@
 <?php
 
-namespace Cruster\Factory\Objects;
+namespace Crust\Factory\Objects;
 
-use Cruster\Cruster;
 use Doctrine\Common\Inflector\Inflector;
-use Nette\PhpGenerator\Helpers;
 use Stringy\StaticStringy as Stringy;
 
 class Taxonomy
@@ -50,16 +48,6 @@ class Taxonomy
         return $this;
     }
 
-    public function generate()
-    {
-        $this->createFiles();
-
-        $content = '<?php' . PHP_EOL . PHP_EOL .
-            $this->generateRegisterTaxonomyFunction();
-
-        file_put_contents(Cruster::INCLUDE_DIR . DIRECTORY_SEPARATOR . $this->fileName, $content);
-    }
-
     private function initSettings($settings)
     {
         $defaultOptions = [
@@ -100,24 +88,10 @@ class Taxonomy
         ];
     }
 
-    private function createFiles()
+    public function createFiles() // TODO Taxonomy archive
     {
-        touch(Cruster::INCLUDE_DIR . DIRECTORY_SEPARATOR . $this->fileName);
-        touch('taxonomy-' . $this->slug . '.php');
-    }
-
-    private function generateRegisterTaxonomyFunction()
-    {
-        $str = '$options = ' . Helpers::dump($this->options, true) . ';' . PHP_EOL . PHP_EOL .
-            'register_taxonomy(\'' . $this->slug . '\', $options);';
-        if (count($this->postTypes) > 0) {
-            $str .= PHP_EOL . PHP_EOL;
-
-            foreach ($this->postTypes as $id => $postType) {
-                $str .= 'register_taxonomy_for_object_type(\'' . $this->slug . '\', \'' . $postType->slug . '\');' . PHP_EOL;
-            }
-        }
-
-        return $str;
+        $tpl = file_get_contents(__DIR__ . '/../Templates/register-taxonomy.php.mustache');
+        $render = $this->theme->scope->renderer->render($tpl, array('taxonomy' => $this));
+        file_put_contents($this->theme->dir() . '/inc/taxonomy-' . $this->slug . '.php', $render);
     }
 }
