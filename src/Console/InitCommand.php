@@ -14,7 +14,7 @@ class InitCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('init')
+            ->setName('init-crust')
             ->setDescription('Init Crust.');
     }
 
