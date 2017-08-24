@@ -26,19 +26,27 @@ class InitCommand extends Command
 
     private function createFilesAndFolders()
     {
+        
         if (!file_exists('./crust-file.php')) {
+            $this->scope->output->write('Creating crust-file.php');
             touch('./crust-file.php');
             $renderer = new \Mustache_Engine();
             $content = $renderer->render(__DIR__ . '/../Factory/Templates/crust-file.php.mustache', array());
             file_put_contents('./crust-file.php', $content);
+            $this->scope->output->writeln(' <success>✓</success>');
         }
 
-        if (!file_exists('./.Crust')) {
-            mkdir('./.Crust');
+        $this->scope->output->write('Creating crust directories.');
+        if (!file_exists('./.crust')) {
+            mkdir('./.crust');
         }
+        if (file_exists('./.crust/tmp')) {
+            mkdir('./.crust/tmp');
+        }
+        $this->scope->output->writeln(' <success>✓</success>');
 
-        if (file_exists('./.Crust/tmp')) {
-            mkdir('./.Crust/tmp');
-        }
+        $this->scope->output->write('Copying crust executable to project directory.');
+        copy(__DIR__ . '/../../crust', './crust');
+        $this->scope->output->writeln(' <success>✓</success>');
     }
 }
