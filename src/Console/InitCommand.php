@@ -47,6 +47,7 @@ class InitCommand extends Command
 
         $this->scope->output->write('Copying crust executable to project directory.');
         copy(__DIR__ . '/../../crust', './crust');
+        shell_exec('chmod +x ./crust');
         $this->scope->output->writeln(' <success>✓</success>');
     }
 }
