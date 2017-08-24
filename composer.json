@@ -17,6 +17,9 @@
             "Crust\\": "src/"
         }
     },
+    "scripts": {
+        "crust-init": "vendor/bin/crust init"
+    },
     "bin": [
         "crust"
     ]
