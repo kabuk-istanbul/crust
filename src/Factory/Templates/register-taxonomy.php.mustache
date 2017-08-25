@@ -30,4 +30,4 @@ $options = [
     'labels' => $labels
 ];
 
-register_taxonomy('{{taxonomy.slug}}', array({{#postTypes}}'{{slug}}',{{/postTypes}}), $options);
+register_taxonomy('{{taxonomy.slug}}', array({{#taxonomy.postTypes}}'{{slug}}',{{/taxonomy.postTypes}}), $options);

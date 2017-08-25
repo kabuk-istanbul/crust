@@ -10,11 +10,9 @@ class Taxonomy
     public $id;
     public $name;
     public $slug;
-
-    public $fileName;
     public $theme;
 
-    protected $postTypes = [];
+    protected $postTypes = array();
     protected $settings;
     protected $labels;
 
@@ -23,8 +21,6 @@ class Taxonomy
         $this->id = Stringy::slugify($name, '_');
         $this->name = Stringy::toTitleCase($name);
         $this->slug = Stringy::slugify($name);
-
-        $this->fileName = 'taxonomy-' . $this->slug . '.php';
 
         $this->initSettings($settings);
     }
@@ -44,7 +40,7 @@ class Taxonomy
 
     public function addPostType(PostType $postType)
     {
-        $this->postTypes[$postType->id] = $postType;
+        $this->postTypes[] = $postType;
         return $this;
     }
 

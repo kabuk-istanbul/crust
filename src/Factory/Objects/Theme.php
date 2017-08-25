@@ -62,7 +62,7 @@ class Theme
             $postType->theme = $this;
 
             $taxonomies = $postType->taxonomies();
-            foreach ($taxonomies as $id => $taxonomy) {
+            foreach ($taxonomies as $taxonomy) {
                 $this->addTaxonomy($taxonomy);
             }
         }
@@ -101,7 +101,7 @@ class Theme
             $taxonomy->theme = $this;
 
             $postTypes = $taxonomy->postTypes();
-            foreach ($postTypes as $id => $postType) {
+            foreach ($postTypes as $postType) {
                 $this->addPostType($postType);
             }
         }
