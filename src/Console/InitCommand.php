@@ -41,7 +41,7 @@ class InitCommand extends Command
         if (!file_exists(Crust::SETTINGS_DIR)) {
             mkdir(Crust::SETTINGS_DIR);
         }
-        if (file_exists(Crust::TEMP_DIR)) {
+        if (!file_exists(Crust::TEMP_DIR)) {
             mkdir(Crust::TEMP_DIR);
         }
         $this->scope->output->writeln(' <success>✓</success>');
