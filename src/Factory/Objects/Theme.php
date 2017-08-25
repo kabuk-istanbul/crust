@@ -213,7 +213,7 @@ class Theme
         Klasor::mkdir($this->dir() . '/src/js');
         Klasor::mkdir($this->dir() . '/src/img');
         Klasor::mkdir($this->dir() . '/src/svg');
-        Klasor::mkdir($this->dir() . '/src/fonts');
+        Klasor::mkdir($this->dir() . '/src/font');
 
         $this->createFile($this->dir() . '/style.css');
         $this->createFile($this->dir() . '/src/' . $this->settings['front_end_tools']['css_preprocessor_file_extension'] . '/style.' . $this->settings['front_end_tools']['css_preprocessor_file_extension'], 'style.css.mustache');
