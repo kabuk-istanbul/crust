@@ -29,7 +29,8 @@ class InitCommand extends Command
         if (!file_exists('./crust-file.php')) {
             touch('./crust-file.php');
             $renderer = new \Mustache_Engine();
-            $content = $renderer->render(__DIR__ . '/../Factory/Templates/crust-file.php.mustache', array());
+            $tpl = file_get_contents(__DIR__ . '/../Factory/Templates/crust-file.php.mustache');
+            $content = $renderer->render($tpl, array());
             file_put_contents('./crust-file.php', $content);
         }
 
