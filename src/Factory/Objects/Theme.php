@@ -189,7 +189,7 @@ class Theme
         if ($templateName == null) {
             $templateName = basename($dir) . '.mustache';
         }
-        $tpl = file_get_contents(__DIR__ . '/../Templates/' . $templateName . '.mustache');
+        $tpl = file_get_contents(__DIR__ . '/../Templates/' . $templateName);
         $render = $this->scope->renderer->render($tpl, array('theme' => $this));
         file_put_contents($dir, $render);
     }
@@ -216,7 +216,7 @@ class Theme
         Klasor::mkdir($this->dir() . '/src/fonts');
 
         $this->createFile($this->dir() . '/style.css');
-        $this->createFile($this->dir() . '/src/' . $this->settings['front_end_tools']['css_preprocessor_file_extension'] . '/style.' + $this->settings['front_end_tools']['css_preprocessor_file_extension'], 'style.css.mustache');
+        $this->createFile($this->dir() . '/src/' . $this->settings['front_end_tools']['css_preprocessor_file_extension'] . '/style.' . $this->settings['front_end_tools']['css_preprocessor_file_extension'], 'style.css.mustache');
         $this->createFile($this->dir() . '/src/js/theme.js');
         $this->createFile($this->dir() . '/gulpfile.js');
         $this->createFile($this->dir() . '/package.json');
