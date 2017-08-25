@@ -19,8 +19,8 @@ class Crust {
 
     const THEME_NAME = 'Crust';
     const WP_DIR = '.';
-    const SETTINGS_DIR = './.Crust';
-    const TEMP_DIR = './.Crust/tmp';
+    const SETTINGS_DIR = './.crust';
+    const TEMP_DIR = './.crust/tmp';
 
     public $fs;
     public $output;

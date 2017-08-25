@@ -38,11 +38,11 @@ class InitCommand extends Command
         }
 
         $this->scope->output->write('Creating crust directories.');
-        if (!file_exists('./.crust')) {
-            mkdir('./.crust');
+        if (!file_exists(Crust::SETTINGS_DIR)) {
+            mkdir(Crust::SETTINGS_DIR);
         }
-        if (file_exists('./.crust/tmp')) {
-            mkdir('./.crust/tmp');
+        if (file_exists(Crust::TEMP_DIR)) {
+            mkdir(Crust::TEMP_DIR);
         }
         $this->scope->output->writeln(' <success>✓</success>');
 
