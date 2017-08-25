@@ -10,6 +10,6 @@ if (have_posts()):
     ${{postType.id}}_{{id}} = get_post_meta($post->ID, '{{id}}', true);
     {{/metas}}
 
-endwhile;
+endif;
 
 get_footer();
