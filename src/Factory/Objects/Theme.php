@@ -186,7 +186,7 @@ class Theme
 
     private function createFile($dir, $templateName = null)
     {
-        if (!$templateName) {
+        if ($templateName == null) {
             $templateName = basename($dir) + '.mustache';
         }
         $tpl = file_get_contents(__DIR__ . '/../Templates/' . $templateName . '.mustache');
