@@ -187,7 +187,7 @@ class Theme
     private function createFile($dir, $templateName = null)
     {
         if ($templateName == null) {
-            $templateName = basename($dir) + '.mustache';
+            $templateName = basename($dir) . '.mustache';
         }
         $tpl = file_get_contents(__DIR__ . '/../Templates/' . $templateName . '.mustache');
         $render = $this->scope->renderer->render($tpl, array('theme' => $this));
