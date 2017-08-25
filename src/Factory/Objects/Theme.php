@@ -184,25 +184,26 @@ class Theme
         copy(__DIR__ . '/../../screenshot.png', $this->dir() . '/screenshot.png');
     }
 
-    private function renderFile($dir)
+    private function createFile($dir, $templateName = null)
     {
-        $fileName = basename($dir);
-
-        $tpl = file_get_contents(__DIR__ . '/../Templates/' . $fileName . '.mustache');
+        if (!$templateName) {
+            $templateName = basename($dir) + '.mustache';
+        }
+        $tpl = file_get_contents(__DIR__ . '/../Templates/' . $templateName . '.mustache');
         $render = $this->scope->renderer->render($tpl, array('theme' => $this));
         file_put_contents($dir, $render);
     }
 
     private function createBaseFiles() {
-        $this->renderFile($this->dir() . '/functions.php');
-        $this->renderFile($this->dir() . '/header.php');
-        $this->renderFile($this->dir() . '/footer.php');
-        $this->renderFile($this->dir() . '/single.php');
-        $this->renderFile($this->dir() . '/archive.php');
-        $this->renderFile($this->dir() . '/page.php');
-        $this->renderFile($this->dir() . '/front-page.php');
-        $this->renderFile($this->dir() . '/404.php');
-        $this->renderFile($this->dir() . '/index.php');
+        $this->createFile($this->dir() . '/functions.php');
+        $this->createFile($this->dir() . '/header.php');
+        $this->createFile($this->dir() . '/footer.php');
+        $this->createFile($this->dir() . '/single.php');
+        $this->createFile($this->dir() . '/archive.php');
+        $this->createFile($this->dir() . '/page.php');
+        $this->createFile($this->dir() . '/front-page.php');
+        $this->createFile($this->dir() . '/404.php');
+        $this->createFile($this->dir() . '/index.php');
     }
 
     private function createFrontEndFiles()
@@ -214,11 +215,12 @@ class Theme
         Klasor::mkdir($this->dir() . '/src/svg');
         Klasor::mkdir($this->dir() . '/src/fonts');
 
-        $this->renderFile($this->dir() . '/style.css');
-        $this->renderFile($this->dir() . '/src/js/theme.js');
-        $this->renderFile($this->dir() . '/gulpfile.js');
-        $this->renderFile($this->dir() . '/package.json');
-        $this->renderFile($this->dir() . '/webpack.config.js');
+        $this->createFile($this->dir() . '/style.css');
+        $this->createFile($this->dir() . '/src/' . $this->settings['front_end_tools']['css_preprocessor_file_extension'] . '/style.' + $this->settings['front_end_tools']['css_preprocessor_file_extension'], 'style.css.mustache');
+        $this->createFile($this->dir() . '/src/js/theme.js');
+        $this->createFile($this->dir() . '/gulpfile.js');
+        $this->createFile($this->dir() . '/package.json');
+        $this->createFile($this->dir() . '/webpack.config.js');
     }
 
     private function createPostTypeFiles()
