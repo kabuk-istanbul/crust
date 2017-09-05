@@ -1,3 +1,3 @@
 # crust
 
-Some experiments
+Wordpress theme generation library.
