@@ -1,0 +1,12 @@
+{{#isSingle}}
+$meta = $_POST['{{postType.slug}}']['{{slug}}'];
+update_post_meta($post_id, '{{id}}', $meta['key'] . '[:]' . $meta['value']);
+{{/isSingle}}
+{{^isSingle}}
+delete_post_meta($post_id, '{{id}}');
+foreach($_POST['{{postType.slug}}']['{{slug}}'] as $meta) {
+    if (!empty($meta)) {
+        add_post_meta($post_id, '{{id}}', $meta);
+    }
+}
+{{/isSingle}}

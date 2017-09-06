@@ -30,51 +30,57 @@ $options = [
 	'rewrite' => ['slug' => '{{postType.slug}}', 'with_front' => FALSE],
 	'capability_type' => '{{postType.settings.capability_type}}',
 	'labels' => $labels,
-    {{#postType.hasMeta}}'register_meta_box_cb' => '{{theme.id}}_{{postType.id}}_meta_boxes'{{/postType.hasMeta}}
+    {{#postType.hasMeta}}'register_meta_box_cb' => '{{postType.theme.id}}_{{postType.id}}_meta_boxes'{{/postType.hasMeta}}
 ];
 
 register_post_type('{{postType.slug}}', $options);
 
 {{#postType.hasMeta}}
-function {{theme.id}}_{{postType.id}}_meta_boxes()
+function {{postType.theme.id}}_{{postType.id}}_meta_boxes()
 {
     {{#postType.metas}}
-    add_meta_box('{{postType.id}}_{{id}}', '{{name}}', '{{theme.id}}_{{postType.id}}_{{id}}_box', '{{postType.slug}}', '{{position}}', 'default');
+    add_meta_box('{{postType.id}}_{{id}}', '{{name}}', '{{postType.theme.id}}_{{postType.id}}_{{id}}_box', '{{postType.slug}}', '{{position}}', 'default');
     {{/postType.metas}}
 }
 
 {{#postType.metas}}
-function {{theme.id}}_{{postType.id}}_{{id}}_box($post)
+function {{postType.theme.id}}_{{postType.id}}_{{id}}_box($post)
 {
-    {{#isString}}
-    {{>meta-string-type}}
-    {{/isString}}
-    {{#isKeyValue}}
-    {{>meta-key-value-type}}
-    {{/isKeyValue}}
+{{#isString}}
+    {{>meta-string-show}}
+{{/isString}}
+{{#isKeyValue}}
+    {{>meta-key-value-show}}
+{{/isKeyValue}}
+{{#isRelation}}
+    {{>meta-relation-show}}
+{{/isRelation}}
 }
 
 {{/postType.metas}}
 {{/postType.hasMeta}}
-function {{theme.id}}_{{postType.id}}_save($post_id)
+function {{postType.theme.id}}_{{postType.id}}_save($post_id)
 {
-    {{#postType.metas}}
-    {{#isSingle}}
-    {{>meta-single-save}}
-    {{/isSingle}}
-    {{^isSingle}}
-    {{>meta-multiple-save}}
-    {{/isSingle}}
-    {{/postType.metas}}
+{{#postType.metas}}
+{{#isString}}
+    {{>meta-string-save}}
+{{/isString}}
+{{#isKeyValue}}
+    {{>meta-key-value-save}}
+{{/isKeyValue}}
+{{#isRelation}}
+    {{>meta-relation-save}}
+{{/isRelation}}
+{{/postType.metas}}
 
 }
 {{#postType.hasMetaInColumns}}
 
-add_filter('manage_{{postType.id}}_posts_columns', '{{theme.id}}_{{postType.id}}_table_head');
-add_action('manage_{{postType.id}}_posts_custom_column', '{{theme.id}}_{{postType.id}}_table_content', 10, 2);
-add_filter('manage_edit-{{postType.id}}_sortable_columns', '{{theme.id}}_{{postType.id}}_table_sorting');
+add_filter('manage_{{postType.id}}_posts_columns', '{{postType.theme.id}}_{{postType.id}}_table_head');
+add_action('manage_{{postType.id}}_posts_custom_column', '{{postType.theme.id}}_{{postType.id}}_table_content', 10, 2);
+add_filter('manage_edit-{{postType.id}}_sortable_columns', '{{postType.theme.id}}_{{postType.id}}_table_sorting');
 
-function {{theme.id}}_{{postType.id}}_table_head($defaults)
+function {{postType.theme.id}}_{{postType.id}}_table_head($defaults)
 {
     {{#postType.metas}}
     {{#hasColumn}}
@@ -84,7 +90,7 @@ function {{theme.id}}_{{postType.id}}_table_head($defaults)
     return $defaults;
 }
 
-function {{theme.id}}_{{postType.id}}_table_content($column_name, $post_id)
+function {{postType.theme.id}}_{{postType.id}}_table_content($column_name, $post_id)
 {
     {{#postType.metas}}
     {{#hasColumn}}
@@ -96,7 +102,7 @@ function {{theme.id}}_{{postType.id}}_table_content($column_name, $post_id)
     {{/postType.metas}}
 }
 
-function {{theme.id}}_{{postType.id}}_table_sorting($columns)
+function {{postType.theme.id}}_{{postType.id}}_table_sorting($columns)
 {
     {{#postType.metas}}
     {{#hasColumn}}
@@ -108,9 +114,9 @@ function {{theme.id}}_{{postType.id}}_table_sorting($columns)
 {{#postType.metas}}
 {{#hasColumn}}
 
-add_filter('request', '{{theme.id}}_{{postType.id}}_{{id}}_column_orderby');
+add_filter('request', '{{postType.theme.id}}_{{postType.id}}_{{id}}_column_orderby');
 
-function {{theme.id}}_{{postType.id}}_{{id}}_column_orderby($vars)
+function {{postType.theme.id}}_{{postType.id}}_{{id}}_column_orderby($vars)
 {
     if (isset($vars['orderby']) && '{{postType.id}}_{{id}}' == $vars['orderby']) {
         $vars = array_merge($vars, [
