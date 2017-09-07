@@ -6,10 +6,11 @@ use Crust\Crust;
 use Crust\Helpers\Klasor;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use ZipArchive;
 
-class InstallWordpressCommand extends Command
+class InstallCommand extends Command
 {
     private $progressBar;
     private $currentStep = 0;
@@ -19,22 +20,51 @@ class InstallWordpressCommand extends Command
     {
         $this
             ->setName('install')
-            ->setDescription('Download and install Wordpress.');
+            ->setDescription('Download and install Wordpress.')
+            ->addOption('wordpress', 'wp', InputOption::VALUE_OPTIONAL, 'Install Wordpress.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->scope = new Crust($input, $output);
+        if (!$input->getOption('wordpress')) {
+            $this->createFilesAndFolders();
+        }
         $this->downloadWP();
         $this->extractWP();
+    }
+
+    private function createFilesAndFolders()
+    {
+        if (!file_exists('./crust-file.php')) {
+            $this->scope->output->write('Creating crust-file.php');
+            touch('./crust-file.php');
+            $tpl = file_get_contents(__DIR__ . '/../Factory/Templates/crust-file.php.mustache');
+            $content = $this->scope->renderer->render($tpl, array());
+            file_put_contents('./crust-file.php', $content);
+            $this->scope->output->writeln(' <success>✓</success>');
+        }
+
+        $this->scope->output->write('Creating crust directories.');
+        if (!file_exists(Crust::SETTINGS_DIR)) {
+            mkdir(Crust::SETTINGS_DIR);
+        }
+        if (!file_exists(Crust::TEMP_DIR)) {
+            mkdir(Crust::TEMP_DIR);
+        }
+        $this->scope->output->writeln(' <success>✓</success>');
+
+        $this->scope->output->write('Copying crust executable to project directory.');
+        copy(__DIR__ . '/../../crust', './crust');
+        shell_exec('chmod +x ./crust');
+        $this->scope->output->writeln(' <success>✓</success>');
     }
 
     protected function downloadWP()
     {
         $wp_zip_file = Crust::TEMP_DIR . '/latest.zip';
 
-        if (!$this->scope->fs->exists($wp_zip_file)) {
-
+        if (!file_exists($wp_zip_file)) {
             $this->scope->output->writeln('<title>Downloading Wordpress</title>');
             $this->progressBar = $this->scope->progressBar();
             $this->progressBar->setMessage('Starting');
@@ -81,8 +111,8 @@ class InstallWordpressCommand extends Command
         $this->scope->output->write('Extracting files');
 
         $wp_zip_file = Crust::TEMP_DIR . '/latest.zip';
-
         $zip = new ZipArchive();
+
         if ($zip->open($wp_zip_file)) {
             $zip->extractTo(Crust::TEMP_DIR);
             $zip->close();

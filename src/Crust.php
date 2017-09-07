@@ -36,16 +36,14 @@ class Crust {
         $this->setOutputFormatterStyles();
 
         $this->renderer = new Mustache_Engine([
-            'partials_loader' => new Mustache_Loader_FilesystemLoader(dirname(__FILE__) . '/Factory/Templates/Partials')
+            'partials_loader' => new Mustache_Loader_FilesystemLoader(__DIR__ . '/Factory/Templates/Partials')
         ]);
     }
 
-    static $extensions = [
+    static $extensions = array(
         'stylus' => 'styl',
         'sass' => 'scss'
-    ];
-
-    static $postTypes = [];
+    );
 
     private function setOutputFormatterStyles()
     {

@@ -50,9 +50,8 @@ class Application extends ConsoleApplication
 
     private function loadCommands()
     {
-        $this->add(new InitCommand());
         $this->add(new RunCommand());
-        $this->add(new InstallWordpressCommand());
+        $this->add(new InstallCommand());
         $this->setDefaultCommand('run');
     }
 }
