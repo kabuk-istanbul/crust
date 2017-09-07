@@ -60,8 +60,7 @@ class Crust {
     public function theme($name = null, $settings = [])
     {
         $name = $name ? $name : self::THEME_NAME;
-        $this->theme = new Theme($name, $settings);
-        $this->theme->setScope($this);
+        $this->theme = new Theme($this, $name, $settings);
         return $this->theme;
     }
 

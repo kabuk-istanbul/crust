@@ -18,8 +18,9 @@ class Theme
     protected $taxonomies = [];
     protected $languages = [];
 
-    function __construct($name, $settings)
+    function __construct(Crust $scope, $name, $settings)
     {
+        $this->scope = $scope;
         $this->id = Stringy::slugify($name, '_');
         $this->name = Stringy::toTitleCase($name);
         $this->slug = Stringy::slugify($name);
@@ -133,15 +134,24 @@ class Theme
 
     public function generate()
     {
+        return $this->create();
+    }
+
+    public function create()
+    {
         $this->createThemeFiles();
         $this->createPostTypeFiles();
         $this->createTaxonomyFiles();
         //$this->createLanguageFiles();
+        return $this;
     }
 
-    public function setScope(Crust $crust)
+    public function install($item)
     {
-        $this->scope = $crust;
+        $this->scope->output->writeln('<title>Installing ' . Stringy::upperCaseFirst($item) . '</title>');
+        $installerClass = '\\Crust\\Factory\\Installers\\' . Stringy::upperCaseFirst($item) . 'Installer';
+        $installer = new $installerClass($this);
+        $installer->install();
     }
 
     private function initSettings($settings = [])
@@ -177,24 +187,36 @@ class Theme
 
     private function createDir()
     {
+        $this->scope->output->writeln('<title>Creating Theme Directories</title>');
         if (!file_exists($this->dir() . '/inc')) {
             mkdir($this->dir() . '/inc', 0777, true);
         }
-
         copy(__DIR__ . '/../../screenshot.png', $this->dir() . '/screenshot.png');
     }
 
-    private function createFile($dir, $templateName = null)
+    private function createFile($file, $templateName = null)
     {
-        if ($templateName == null) {
-            $templateName = basename($dir) . '.mustache';
+        if (!file_exists($file)) {
+            $fileName = basename($file);
+
+            $this->scope->output->write("         $fileName");
+            if ($templateName == null) {
+                $templateName = $fileName . '.mustache';
+            }
+            $tpl = file_get_contents(__DIR__ . '/../Templates/' . $templateName);
+            $render = $this->scope->renderer->render($tpl, array('theme' => $this));
+            if (file_put_contents($file, $render)) {
+                $this->scope->output->writeln(' <success>✓</success>');
+            }
+            else {
+                $this->scope->output->writeln(' <error>✗</error>');
+            }
         }
-        $tpl = file_get_contents(__DIR__ . '/../Templates/' . $templateName);
-        $render = $this->scope->renderer->render($tpl, array('theme' => $this));
-        file_put_contents($dir, $render);
     }
 
-    private function createBaseFiles() {
+    private function createBaseFiles()
+    {
+        $this->scope->output->writeln('<title>Creating Base Files</title>');
         $this->createFile($this->dir() . '/functions.php');
         $this->createFile($this->dir() . '/header.php');
         $this->createFile($this->dir() . '/footer.php');
@@ -208,6 +230,7 @@ class Theme
 
     private function createFrontEndFiles()
     {
+        $this->scope->output->writeln('<title>Creating Front-end Files</title>');
         Klasor::mkdir($this->dir() . '/src');
         Klasor::mkdir($this->dir() . '/src/' . $this->settings['front_end_tools']['css_preprocessor_file_extension']);
         Klasor::mkdir($this->dir() . '/src/js');
