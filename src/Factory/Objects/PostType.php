@@ -108,7 +108,7 @@ class PostType
             'capability_type' => 'post'
         ];
 
-        $this->settings = array_merge_recursive($defaultSettings, $settings);
+        $this->settings = array_replace_recursive($defaultSettings, $settings);
         $this->generateLabels();
     }
 

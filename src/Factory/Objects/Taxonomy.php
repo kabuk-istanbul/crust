@@ -47,7 +47,7 @@ class Taxonomy
     private function initSettings($settings)
     {
         $defaultOptions = [
-            'hierarchical' => false,
+            'hierarchical' => true,
             'show_ui' => true,
             'show_admin_column' => true,
             'update_count_callback' => '_update_post_term_count',
@@ -55,7 +55,8 @@ class Taxonomy
             'rewrite' => array('slug' => $this->slug),
         ];
 
-        $this->settings = array_merge($defaultOptions, $settings);
+        $this->settings = array_replace_recursive($defaultOptions, $settings);
+        var_dump($this->settings);
         $this->generateLabels();
     }
 
