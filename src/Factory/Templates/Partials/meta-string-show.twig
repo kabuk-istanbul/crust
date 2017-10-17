@@ -1,0 +1,9 @@
+$meta = get_post_meta($post->ID, '{{meta.id}}', {{meta.settings.single|var}});
+{% if meta.isSingle %}
+    echo '<input name="{{postType.slug}}[{{meta.slug}}]" type="text" style="width: 100%;" value="' . $meta . '" />';
+{% else %}
+    foreach ($meta as $meta_item) {
+        echo '<input name="{{postType.slug}}[{{meta.slug}}][]" type="text" style="width: 100%;" value="' . $meta_item . '" />';
+    }
+    echo '<input name="{{postType.slug}}[{{meta.slug}}][]" type="text" style="width: 100%;" placeholder="' . __('New Value', '{{theme.slug}}') . '" />';
+{% endif %}

@@ -201,10 +201,9 @@ class Theme
 
             $this->scope->output->write("         $fileName");
             if ($templateName == null) {
-                $templateName = $fileName . '.mustache';
+                $templateName = $fileName . '.twig';
             }
-            $tpl = file_get_contents(__DIR__ . '/../Templates/' . $templateName);
-            $render = $this->scope->renderer->render($tpl, array('theme' => $this));
+            $render = $this->scope->renderer->render($templateName, array('theme' => $this));
             if (file_put_contents($file, $render)) {
                 $this->scope->output->writeln(' <success>✓</success>');
             }
@@ -239,7 +238,7 @@ class Theme
         Klasor::mkdir($this->dir() . '/src/font');
 
         $this->createFile($this->dir() . '/style.css');
-        $this->createFile($this->dir() . '/src/' . $this->settings['front_end_tools']['css_preprocessor_file_extension'] . '/style.' . $this->settings['front_end_tools']['css_preprocessor_file_extension'], 'style.css.mustache');
+        $this->createFile($this->dir() . '/src/' . $this->settings['front_end_tools']['css_preprocessor_file_extension'] . '/style.' . $this->settings['front_end_tools']['css_preprocessor_file_extension'], 'style.css.twig');
         $this->createFile($this->dir() . '/src/js/theme.js');
         $this->createFile($this->dir() . '/gulpfile.js');
         $this->createFile($this->dir() . '/package.json');

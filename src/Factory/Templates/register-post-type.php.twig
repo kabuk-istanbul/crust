@@ -1,0 +1,56 @@
+<?php
+
+$labels = [
+{% for label, text in postType.labels %}
+    '{{ label }}' => __('{{ text }}', '{{ postType.theme.slug }}'),
+{% endfor %}
+];
+
+$options = [
+{% for key, setting in postType.settings %}
+{% if key == 'rewrite' %}
+    '{{ key }}' => array('slug' => {{ setting.slug|var|raw }}, 'with_front' => {{ setting.with_front|var }}),
+{% else %}
+    '{{ key }}' => {{ setting|var|raw }},
+{% endif %}
+{% endfor %}
+{% if postType.hasMeta %}
+    'register_meta_box_cb' => '{{postType.theme.id}}_{{postType.id}}_meta_boxes',
+{% endif %}
+    'labels' => $labels
+];
+
+register_post_type('{{postType.slug}}', $options);
+
+{% if 'excerpt' in postType.settings.supports %}
+add_post_type_support('{{postType.slug}}', 'excerpt');
+{% endif %}
+
+{% if postType.hasMeta %}
+function {{postType.theme.id}}_{{postType.id}}_meta_boxes()
+{
+{% for meta in postType.metas %}
+    add_meta_box('{{postType.id}}_{{meta.id}}', '{{meta.name}}', '{{postType.theme.id}}_{{postType.id}}_{{meta.id}}_box', '{{postType.slug}}', '{{meta.settings.position}}', 'default');
+{% endfor %}
+}
+
+{% for meta in postType.metas %}
+function {{postType.theme.id}}_{{postType.id}}_{{meta.id}}_box($post)
+{
+{% if meta.settings.type == 'string' %} {{ include('Partials/meta-string-show.twig') }}
+{% elseif meta.settings.type == 'key_value' %} {{ include('Partials/meta-key-value-show.twig') }}
+{% elseif meta.settings.type == 'select' %} {{ include('Partials/meta-select-show.twig') }}
+{% endif %}
+}
+
+{% endfor %}
+{% endif %}
+function {{postType.theme.id}}_{{postType.id}}_save($post_id)
+{
+{% for meta in postType.metas %}
+{% if meta.settings.type == 'string' %} {{ include('Partials/meta-string-save.twig') }}
+{% elseif meta.settings.type == 'key_value' %} {{ include('Partials/meta-key-value-save.twig') }}
+{% elseif meta.settings.type == 'select' %} {{ include('Partials/meta-select-save.twig') }}
+{% endif %}
+{% endfor %}
+}

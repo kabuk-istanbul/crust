@@ -87,16 +87,13 @@ class PostType
 
     public function createFiles()
     {
-        $tpl = file_get_contents(__DIR__ . '/../Templates/single-post-type.php.mustache');
-        $render = $this->theme->scope->renderer->render($tpl, array('postType' => $this));
+        $render = $this->theme->scope->renderer->render('single-post-type.php.twig', array('postType' => $this));
         file_put_contents($this->theme->dir() . '/single-' . $this->slug . '.php', $render);
 
-        $tpl = file_get_contents(__DIR__ . '/../Templates/archive-post-type.php.mustache');
-        $render = $this->theme->scope->renderer->render($tpl, array('postType' => $this));
+        $render = $this->theme->scope->renderer->render('archive-post-type.php.twig', array('postType' => $this));
         file_put_contents($this->theme->dir() . '/archive-' . $this->slug . '.php', $render);
 
-        $tpl = file_get_contents(__DIR__ . '/../Templates/register-post-type.php.mustache');
-        $render = $this->theme->scope->renderer->render($tpl, array('postType' => $this));
+        $render = $this->theme->scope->renderer->render('register-post-type.php.twig', array('postType' => $this));
         file_put_contents($this->theme->dir() . '/inc/post-type-' . $this->slug . '.php', $render);
     }
 
@@ -111,7 +108,7 @@ class PostType
             'capability_type' => 'post'
         ];
 
-        $this->settings = array_merge($defaultSettings, $settings);
+        $this->settings = array_merge_recursive($defaultSettings, $settings);
         $this->generateLabels();
     }
 

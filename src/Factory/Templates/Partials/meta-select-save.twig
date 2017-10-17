@@ -1,0 +1,11 @@
+{% if meta.isSingle %}
+    $meta = $_POST['{{postType.slug}}']['{{meta.slug}}'];
+    update_post_meta($post_id, '{{meta.id}}', $meta);
+{% else %}
+    delete_post_meta($post_id, '{{meta.id}}');
+    foreach($_POST['{{postType.slug}}']['{{meta.slug}}'] as $meta) {
+        if (!empty($meta)) {
+            add_post_meta($post_id, '{{meta.id}}', $meta);
+        }
+    }
+{% endif %}

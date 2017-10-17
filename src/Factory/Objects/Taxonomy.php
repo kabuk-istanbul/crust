@@ -86,8 +86,7 @@ class Taxonomy
 
     public function createFiles() // TODO Taxonomy archive
     {
-        $tpl = file_get_contents(__DIR__ . '/../Templates/register-taxonomy.php.mustache');
-        $render = $this->theme->scope->renderer->render($tpl, array('taxonomy' => $this));
+        $render = $this->theme->scope->renderer->render('register-taxonomy.php.twig', array('taxonomy' => $this));
         file_put_contents($this->theme->dir() . '/inc/taxonomy-' . $this->slug . '.php', $render);
     }
 }

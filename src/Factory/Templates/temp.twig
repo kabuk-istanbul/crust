@@ -1,0 +1,54 @@
+{% if postType.hasMetaInColumns %}
+
+    add_filter('manage_{{postType.id}}_posts_columns', '{{postType.theme.id}}_{{postType.id}}_table_head');
+    add_action('manage_{{postType.id}}_posts_custom_column', '{{postType.theme.id}}_{{postType.id}}_table_content', 10, 2);
+    add_filter('manage_edit-{{postType.id}}_sortable_columns', '{{postType.theme.id}}_{{postType.id}}_table_sorting');
+
+    function {{postType.theme.id}}_{{postType.id}}_table_head($defaults)
+    {
+    {{#postType.metas}}
+    {{#hasColumn}}
+    $defaults['{{postType.id}}_{{id}}']  = __('{{name}}', '{{theme.slug}}');
+    {{/hasColumn}}
+    {{/postType.metas}}
+    return $defaults;
+    }
+
+    function {{postType.theme.id}}_{{postType.id}}_table_content($column_name, $post_id)
+    {
+    {{#postType.metas}}
+    {{#hasColumn}}
+    if ($column_name == '{{postType.id}}_{{id}}') {
+    ${{postType.id}}_{{id}} = get_post_meta($post_id, '{{id}}', true);
+    echo ${{postType.id}}_{{id}};
+    }
+    {{/hasColumn}}
+    {{/postType.metas}}
+    }
+
+    function {{postType.theme.id}}_{{postType.id}}_table_sorting($columns)
+    {
+    {{#postType.metas}}
+    {{#hasColumn}}
+    $columns['{{postType.id}}_{{id}}']  = '{{postType.id}}_{{id}}';
+    {{/hasColumn}}
+    {{/postType.metas}}
+    return $columns;
+    }
+{% endif %}
+
+add_filter('request', '{{postType.theme.id}}_{{postType.id}}_{{id}}_column_orderby');
+
+function {{postType.theme.id}}_{{postType.id}}_{{id}}_column_orderby($vars)
+{
+if (isset($vars['orderby']) && '{{postType.id}}_{{id}}' == $vars['orderby']) {
+$vars = array_merge($vars, [
+'meta_key' => '{{id}}',
+'orderby' => 'meta_value'
+]);
+}
+return $vars;
+}
+{{/hasColumn}}
+{{/postType.metas}}
+{{/postType.hasMetaInColumns}}

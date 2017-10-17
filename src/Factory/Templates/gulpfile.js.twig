@@ -29,7 +29,7 @@ gulp.task('fonts', function () {
 });
 
 gulp.task('default', ['{{theme.settings.front_end_tools.css_preprocessor}}',  'js', 'images', 'fonts'], function () {
-	gulp.watch('src/{{theme.settings.front_end_tools.css_preprocessor_file_extension}}/**/*', ['stylus']);
+	gulp.watch('src/{{theme.settings.front_end_tools.css_preprocessor_file_extension}}/**/*', ['{{theme.settings.front_end_tools.css_preprocessor}}']);
 	gulp.watch('src/js/**/*', ['js']);
 	gulp.watch('src/img/**/*', ['images']);
 	gulp.watch('src/fonts/**/*', ['fonts']);
