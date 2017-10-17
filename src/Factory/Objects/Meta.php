@@ -32,7 +32,7 @@ class Meta {
             'source' => null
         ];
 
-        $this->settings = array_merge($defaultSettings, $settings);
+        $this->settings = array_replace($defaultSettings, $settings);
     }
 
     function position()
