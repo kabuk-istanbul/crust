@@ -35,33 +35,13 @@ class Meta {
         $this->settings = array_replace($defaultSettings, $settings);
     }
 
-    function position()
+    function settings()
     {
-        return $this->settings['position'];
-    }
-
-    function hasColumn()
-    {
-        return $this->settings['has_column'];
+        return $this->settings;
     }
 
     function isSingle()
     {
         return (int) $this->settings['single'];
-    }
-
-    function source()
-    {
-        return Stringy::slugify($this->settings['source']);
-    }
-
-    function isString()
-    {
-        return $this->settings['type'] == 'string';
-    }
-
-    function isKeyValue()
-    {
-        return $this->settings['type'] == 'key_value';
     }
 }

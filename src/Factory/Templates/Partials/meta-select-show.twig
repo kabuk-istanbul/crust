@@ -1,5 +1,3 @@
-
-
 {% if meta.settings.source is post_type %}
 $meta = get_post_meta($post->ID, '{{meta.id}}', {{meta.isSingle|var}});
 $posts = get_posts(array(
@@ -23,5 +21,4 @@ foreach ($posts as $post) {
 $html .= '</select>';
 echo $html;
 {% endif %}
-
 {% endif %}
