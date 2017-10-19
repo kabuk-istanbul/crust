@@ -2,6 +2,7 @@
 
 namespace Crust\Factory\Objects;
 
+use Crust\Helpers\ArraySet;
 use Stringy\StaticStringy as Stringy;
 
 class Page
@@ -31,6 +32,6 @@ class Page
     {
         $defaultSettings = [];
 
-        $this->settings = array_merge($defaultSettings, $settings);
+        $this->settings = ArraySet::join($defaultSettings, $settings);
     }
 }

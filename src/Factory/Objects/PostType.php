@@ -2,6 +2,7 @@
 
 namespace Crust\Factory\Objects;
 
+use Crust\Helpers\ArraySet;
 use Doctrine\Common\Inflector\Inflector;
 use Stringy\StaticStringy as Stringy;
 
@@ -108,7 +109,7 @@ class PostType
             'capability_type' => 'post'
         ];
 
-        $this->settings = array_replace_recursive($defaultSettings, $settings);
+        $this->settings = ArraySet::join($defaultSettings, $settings);
         $this->generateLabels();
     }
 

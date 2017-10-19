@@ -2,6 +2,7 @@
 
 namespace Crust\Factory\Objects;
 
+use Crust\Helpers\ArraySet;
 use Stringy\StaticStringy as Stringy;
 
 class Meta {
@@ -32,7 +33,7 @@ class Meta {
             'source' => null
         ];
 
-        $this->settings = array_replace($defaultSettings, $settings);
+        $this->settings = ArraySet::join($defaultSettings, $settings);
     }
 
     function settings()

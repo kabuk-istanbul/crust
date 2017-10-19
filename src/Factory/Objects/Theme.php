@@ -3,6 +3,7 @@
 namespace Crust\Factory\Objects;
 
 use Crust\Crust;
+use Crust\Helpers\ArraySet;
 use Crust\Helpers\Klasor;
 use Stringy\StaticStringy as Stringy;
 
@@ -164,7 +165,7 @@ class Theme
             ]
         ];
 
-        $this->settings = array_merge_recursive($defaultSettings, $settings);
+        $this->settings = ArraySet::join($defaultSettings, $settings);
 
         if (!$this->settings['front_end_tools']['css_preprocessor_file_extension']) {
             switch ($this->settings['front_end_tools']['css_preprocessor']) {

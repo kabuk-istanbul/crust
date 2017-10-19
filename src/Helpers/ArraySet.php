@@ -4,7 +4,7 @@ namespace Crust\Helpers;
 
 class ArraySet
 {
-    public static function joinArrays($arr1, $arr2)
+    public static function join($arr1, $arr2)
     {
         if (self::isAssoc($arr1)) {
             return self::joinAssoc($arr1, $arr2);

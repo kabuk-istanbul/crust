@@ -2,6 +2,7 @@
 
 namespace Crust\Factory\Objects;
 
+use Crust\Helpers\ArraySet;
 use Doctrine\Common\Inflector\Inflector;
 use Stringy\StaticStringy as Stringy;
 
@@ -55,8 +56,7 @@ class Taxonomy
             'rewrite' => array('slug' => $this->slug),
         ];
 
-        $this->settings = array_replace_recursive($defaultOptions, $settings);
-        var_dump($this->settings);
+        $this->settings = ArraySet::join($defaultOptions, $settings);
         $this->generateLabels();
     }
 
