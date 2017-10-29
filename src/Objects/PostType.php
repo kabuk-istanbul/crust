@@ -1,53 +1,34 @@
 <?php
 
-namespace Crust\Factory\Objects;
+namespace Crust\Objects;
 
-use Crust\Helpers\ArraySet;
+use Crust\Helpers\Utils;
 use Doctrine\Common\Inflector\Inflector;
-use Stringy\StaticStringy as Stringy;
 
-class PostType
+class PostType extends Base
 {
-
-    public $id;
-    public $name;
-    public $slug;
     public $theme;
 
     protected $metas = [];
     protected $taxonomies = [];
-    protected $settings;
     protected $labels;
 
-    function __construct($name, $settings)
+    function __construct($name, $settings = [])
     {
-        $this->id = Stringy::slugify($name, '_');
-        $this->name = Stringy::toTitleCase($name);
-        $this->slug = Stringy::slugify($this->name);
-
+        parent::__construct($name);
         $this->initSettings($settings);
     }
 
-    public function supports($supports)
+    public function taxonomies()
     {
-        $current = $this->settings['supports'];
+        return $this->taxonomies;
+    }
 
-        if (!is_array($supports)) {
-            $supports = [$supports];
-        }
-
-        $this->settings['supports'] = array_merge($current, $supports);
+    public function addTaxonomy(Taxonomy $taxonomy)
+    {
+        $this->taxonomies[] = $taxonomy;
+        $taxonomy->addPostType($this);
         return $this;
-    }
-
-    public function settings()
-    {
-        return $this->settings;
-    }
-
-    public function labels()
-    {
-        return $this->labels;
     }
 
     public function metas()
@@ -69,33 +50,14 @@ class PostType
     public function hasMetaInColumns()
     {
         foreach ($this->metas as $meta) {
-            if ($meta->hasColumn()) return true;
+            if ($meta->settings('has_column')) return true;
         }
         return false;
     }
 
-    public function taxonomies()
+    public function labels()
     {
-        return $this->taxonomies;
-    }
-
-    public function addTaxonomy(Taxonomy $taxonomy)
-    {
-        $this->taxonomies[] = $taxonomy;
-        $taxonomy->addPostType($this);
-        return $this;
-    }
-
-    public function createFiles()
-    {
-        $render = $this->theme->scope->renderer->render('single-post-type.php.twig', array('postType' => $this));
-        file_put_contents($this->theme->dir() . '/single-' . $this->slug . '.php', $render);
-
-        $render = $this->theme->scope->renderer->render('archive-post-type.php.twig', array('postType' => $this));
-        file_put_contents($this->theme->dir() . '/archive-' . $this->slug . '.php', $render);
-
-        $render = $this->theme->scope->renderer->render('register-post-type.php.twig', array('postType' => $this));
-        file_put_contents($this->theme->dir() . '/inc/post-type-' . $this->slug . '.php', $render);
+        return $this->labels;
     }
 
     private function initSettings($settings)
@@ -109,7 +71,7 @@ class PostType
             'capability_type' => 'post'
         ];
 
-        $this->settings = ArraySet::join($defaultSettings, $settings);
+        $this->settings = Utils::join($defaultSettings, $settings);
         $this->generateLabels();
     }
 
@@ -138,4 +100,20 @@ class PostType
             'menu_name' => $pluralName
         ];
     }
+
+    /*
+
+
+
+
+
+
+
+
+
+
+
+
+
+    */
 }

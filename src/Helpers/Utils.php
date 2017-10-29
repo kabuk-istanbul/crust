@@ -2,10 +2,11 @@
 
 namespace Crust\Helpers;
 
-class ArraySet
+class Utils
 {
-    public static function join($arr1, $arr2)
+    public static function join(array $arr1, array $arr2)
     {
+        if (count($arr2) == 0) return;
         if (self::isAssoc($arr1)) {
             return self::joinAssoc($arr1, $arr2);
         }
@@ -16,7 +17,7 @@ class ArraySet
 
     public static function joinSeq($arr1, $arr2)
     {
-        $dif = array_diff($arr1, $arr2);
+        $dif = array_diff($arr2, $arr1);
         $arr1 = array_merge($arr1, $dif);
         return $arr1;
     }
@@ -24,21 +25,23 @@ class ArraySet
     public static function joinAssoc($arr1, $arr2)
     {
         foreach ($arr1 as $key => $value) {
-            if (array_key_exists($key, $arr2)) {
-                if (is_array($value)) {
-                    if (is_array($arr2[$key])) {
-                        $arr1[$key] = self::joinArrays($value, $arr2[$key]);
+            if (is_string($key)) {
+                if (array_key_exists($key, $arr2)) {
+                    if (is_array($value)) {
+                        if (is_array($arr2[$key])) {
+                            $arr1[$key] = self::join($value, $arr2[$key]);
+                        }
+                        else {
+                            $arr1[$key] = $arr2[$key];
+                        }
                     }
                     else {
                         $arr1[$key] = $arr2[$key];
                     }
                 }
-                else {
-                    $arr1[$key] = $arr2[$key];
-                }
             }
         }
-        $dif = array_diff_key($arr1, $arr2);
+        $dif = array_diff($arr2, $arr1);
         $arr1 = array_merge($arr1, $dif);
         return $arr1;
     }

@@ -1,37 +1,21 @@
 <?php
 
-namespace Crust\Factory\Objects;
+namespace Crust\Objects;
 
-use Crust\Helpers\ArraySet;
+use Crust\Helpers\Utils;
 use Doctrine\Common\Inflector\Inflector;
-use Stringy\StaticStringy as Stringy;
 
-class Taxonomy
+class Taxonomy extends Base
 {
-    public $id;
-    public $name;
-    public $slug;
     public $theme;
 
     protected $postTypes = array();
-    protected $settings;
     protected $labels;
 
     function __construct($name, $settings)
     {
-        $this->id = Stringy::slugify($name, '_');
-        $this->name = Stringy::toTitleCase($name);
-        $this->slug = Stringy::slugify($name);
-
+        parent::__construct($name);
         $this->initSettings($settings);
-    }
-
-    public function settings() {
-        return $this->settings;
-    }
-
-    public function labels() {
-        return $this->labels;
     }
 
     public function postTypes()
@@ -45,6 +29,11 @@ class Taxonomy
         return $this;
     }
 
+    public function labels()
+    {
+        return $this->labels;
+    }
+
     private function initSettings($settings)
     {
         $defaultOptions = [
@@ -53,10 +42,10 @@ class Taxonomy
             'show_admin_column' => true,
             'update_count_callback' => '_update_post_term_count',
             'query_var' => true,
-            'rewrite' => array('slug' => $this->slug),
+            'rewrite' => array('slug' => $this->slug)
         ];
 
-        $this->settings = ArraySet::join($defaultOptions, $settings);
+        $this->settings = Utils::join($defaultOptions, $settings);
         $this->generateLabels();
     }
 
@@ -83,11 +72,5 @@ class Taxonomy
             'choose_from_most_used' => 'Choose from the most used ' . $pluralName,
             'not_found' => 'No ' . $pluralName . ' found.'
         ];
-    }
-
-    public function createFiles() // TODO Taxonomy archive
-    {
-        $render = $this->theme->scope->renderer->render('register-taxonomy.php.twig', array('taxonomy' => $this));
-        file_put_contents($this->theme->dir() . '/inc/taxonomy-' . $this->slug . '.php', $render);
     }
 }
