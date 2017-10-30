@@ -18,7 +18,6 @@
   "require": {
     "danielstjules/stringy": "*",
     "doctrine/inflector": "*",
-    "kabuk/crust-flu-installer": "^0.0.1",
     "symfony/console": "*",
     "symfony/event-dispatcher": "*",
     "twig/twig": "*"
