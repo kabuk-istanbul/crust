@@ -37,9 +37,9 @@ function {{postType.theme.id}}_{{postType.id}}_meta_boxes()
 {% for meta in postType.metas %}
 function {{postType.theme.id}}_{{postType.id}}_{{meta.id}}_box($post)
 {
-{% if meta.settings.type == 'string' %} {{ include('Partials/meta-string-show.twig') }}
-{% elseif meta.settings.type == 'key_value' %} {{ include('Partials/meta-key-value-show.twig') }}
-{% elseif meta.settings.type == 'select' %} {{ include('Partials/meta-select-show.twig') }}
+{% if meta.settings.type == 'string' %}{{ include('Partials/meta-string-show.twig') }}
+{% elseif meta.settings.type == 'key_value' %}{{ include('Partials/meta-key-value-show.twig') }}
+{% elseif meta.settings.type == 'select' %}{{ include('Partials/meta-select-show.twig') }}
 {% endif %}
 }
 
@@ -48,9 +48,9 @@ function {{postType.theme.id}}_{{postType.id}}_{{meta.id}}_box($post)
 function {{postType.theme.id}}_{{postType.id}}_save($post_id)
 {
 {% for meta in postType.metas %}
-{% if meta.settings.type == 'string' %} {{ include('Partials/meta-string-save.twig') }}
-{% elseif meta.settings.type == 'key_value' %} {{ include('Partials/meta-key-value-save.twig') }}
-{% elseif meta.settings.type == 'select' %} {{ include('Partials/meta-select-save.twig') }}
+{% if meta.settings.type == 'string' %}{{ include('Partials/meta-string-save.twig') }}
+{% elseif meta.settings.type == 'key_value' %}{{ include('Partials/meta-key-value-save.twig') }}
+{% elseif meta.settings.type == 'select' %}{{ include('Partials/meta-select-save.twig') }}
 {% endif %}
 {% endfor %}
 }

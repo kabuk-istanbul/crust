@@ -24,7 +24,7 @@ class Meta extends Base
             'source' => null
         ];
 
-        $this->settings = Utils::join($defaultSettings, $settings);
+        $this->settings = array_replace_recursive($defaultSettings, $settings);
     }
 
     function isSingle()

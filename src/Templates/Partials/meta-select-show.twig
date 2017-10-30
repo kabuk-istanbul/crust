@@ -1,24 +1,24 @@
 {% if meta.settings.source is post_type %}
-$meta = get_post_meta($post->ID, '{{meta.id}}', {{meta.isSingle|var}});
-$posts = get_posts(array(
-    'posts_per_page' => -1,
-    'orderby' => 'title',
-    'order' => 'ASC',
-    'post_type' => '{{meta.settings.source.slug}}',
-    'suppress_filters' => true
-));
+    $meta = get_post_meta($post->ID, '{{meta.id}}', {{meta.isSingle|var}});
+    $posts = get_posts(array(
+        'posts_per_page' => -1,
+        'orderby' => 'title',
+        'order' => 'ASC',
+        'post_type' => '{{meta.settings.source.slug}}',
+        'suppress_filters' => true
+    ));
 
 {% if meta.isSingle %}
-$html = '<select name="{{postType.slug}}[{{meta.slug}}]" style="width: 100%;">';
-foreach ($posts as $post) {
-    if ($post->ID == $meta) {
-        $html .= '<option value="' . $post->ID . '" selected="selected">' . $post->post_title . '</option>';
+    $html = '<select name="{{postType.slug}}[{{meta.slug}}]" style="width: 100%;">';
+    foreach ($posts as $post) {
+        if ($post->ID == $meta) {
+            $html .= '<option value="' . $post->ID . '" selected="selected">' . $post->post_title . '</option>';
+        }
+        else {
+            $html .= '<option value="' . $post->ID . '">' . $post->post_title . '</option>';
+        }
     }
-    else {
-        $html .= '<option value="' . $post->ID . '">' . $post->post_title . '</option>';
-    }
-}
-$html .= '</select>';
-echo $html;
+    $html .= '</select>';
+    echo $html;
 {% endif %}
 {% endif %}

@@ -50,6 +50,7 @@ class Crust {
     {
         $loader = new \Twig_Loader_Filesystem(__DIR__ . '/Templates');
         $this->renderer = new \Twig_Environment($loader);
+
         $var = new \Twig_Filter('var', function ($value) {
             if (is_bool($value)) {
                 return $value ? 'true' : 'false';
@@ -63,6 +64,11 @@ class Crust {
             return $value;
         });
         $this->renderer->addFilter($var);
+
+        $test = new \Twig_Test('post_type', function ($value) {
+            return $value instanceof PostType;
+        });
+        $this->renderer->addTest($test);
     }
 
     private function setOutputFormatterStyles()

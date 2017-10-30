@@ -9,9 +9,9 @@ $labels = [
 $options = [
 {% for key, setting in taxonomy.settings %}
 {% if key == 'rewrite' %}
-    '{{ key }}' => array('slug' => {{ setting.slug|var }}, 'with_front' => {{ setting.with_front|var }}),
+    '{{ key }}' => array('slug' => {{ setting.slug|var|raw }}),
 {% else %}
-    '{{ key }}' => {{ setting|var }},
+    '{{ key }}' => {{ setting|var|raw }},
 {% endif %}
 {% endfor %}
 {% if taxonomy.hasMeta %}
