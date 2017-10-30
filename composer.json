@@ -1,29 +1,32 @@
 {
-    "name": "kabuk/crust",
-    "description": "Wordpress theme generation library.",
-    "type": "library",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Taha Kelesoglu",
-            "email": "taha@kabuk.io"
-        }
-    ],
-    "autoload": {
-        "psr-4": { "Crust\\": "src" }
-    },
-    "autoload-dev" : {
-        "psr-4": { "Crust\\Tests\\" : "tests" }
-    },
-    "require": {
-        "danielstjules/stringy": "*",
-        "doctrine/inflector": "*",
-        "kabuk/crust-flu-installer": "^0.0.1",
-        "symfony/console": "*",
-        "symfony/event-dispatcher": "*",
-        "twig/twig": "*"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "*"
+  "name": "kabuk/crust",
+  "description": "Wordpress theme generation library.",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Taha Kelesoglu",
+      "email": "taha@kabuk.io"
     }
+  ],
+  "autoload": {
+    "psr-4": { "Crust\\": "src" }
+  },
+  "autoload-dev" : {
+    "psr-4": { "Crust\\Tests\\" : "tests" }
+  },
+  "require": {
+    "danielstjules/stringy": "*",
+    "doctrine/inflector": "*",
+    "kabuk/crust-flu-installer": "^0.0.1",
+    "symfony/console": "*",
+    "symfony/event-dispatcher": "*",
+    "twig/twig": "*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "*"
+  },
+  "bin": [
+    "bin/crust"
+  ]
 }
