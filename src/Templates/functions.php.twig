@@ -33,7 +33,7 @@ function {{theme.id}}_init()
 function {{theme.id}}_enqueue_style_and_scripts()
 {
 	wp_enqueue_style('{{theme.slug}}-style', get_stylesheet_uri());
-	wp_enqueue_script('{{theme.slug}}.js', get_template_directory_uri() . '/js/{{theme.slug}}.js', [], false, true);
+	wp_enqueue_script('theme.js', get_template_directory_uri() . '/theme.js', [], false, true);
 }
 
 function {{theme.id}}_include_customs()

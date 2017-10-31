@@ -6,9 +6,9 @@ while (have_posts()):
 
     the_post();
     ${{postType.id}} = get_post();
-    {% for meta in postType.metas %}
+{% for meta in postType.metas %}
     ${{postType.id}}_{{meta.id}} = get_post_meta($post->ID, '{{meta.id}}', true);
-    {% endfor %}
+{% endfor %}
 
 endwhile;
 
