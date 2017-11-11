@@ -6,7 +6,7 @@ class Utils
 {
     public static function join(array $arr1, array $arr2)
     {
-        if (count($arr2) == 0) return;
+        if (count($arr2) == 0) return $arr1;
         if (self::isAssoc($arr1)) {
             return self::joinAssoc($arr1, $arr2);
         }
