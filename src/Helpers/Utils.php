@@ -41,8 +41,18 @@ class Utils
                 }
             }
         }
-        $dif = array_diff($arr2, $arr1);
-        $arr1 = array_merge($arr1, $dif);
+        foreach ($arr2 as $key => $value) {
+            if (is_string($key)) {
+                if (!array_key_exists($key, $arr1)) {
+                    $arr1[$key] = $value;
+                }
+            }
+            elseif (is_int($key)) {
+                if (!in_array($value, $arr1)) {
+                    $arr1[] = $value;
+                }
+            }
+        }
         return $arr1;
     }
 

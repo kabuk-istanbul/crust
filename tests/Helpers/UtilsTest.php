@@ -25,5 +25,29 @@ class UtilsTest extends TestCase
         $arr1 = ['one', 'two', 'three'];
         $arr2 = ['two', 'four', 'six'];
         $this->assertEquals(['one', 'two', 'three', 'four', 'six'], Utils::join($arr1, $arr2));
+
+        $arr1 = [
+            'menu_position' => 5,
+            'supports' => ['title', 'editor', 'thumbnail'],
+            'has_archive' => true,
+            'public' => true,
+            'rewrite' => ['slug' => 'custom-post', 'with_front' => false],
+            'capability_type' => 'post'
+        ];
+        $arr2 = [
+            'hierarchical' => true,
+            'supports' => ['page-attributes']
+        ];
+        $expected = [
+            'menu_position' => 5,
+            'supports' => ['title', 'editor', 'thumbnail', 'page-attributes'],
+            'has_archive' => true,
+            'public' => true,
+            'rewrite' => ['slug' => 'custom-post', 'with_front' => false],
+            'capability_type' => 'post',
+            'hierarchical' => true
+        ];
+        $actual = Utils::join($arr1, $arr2);
+        $this->assertEquals($expected, $actual);
     }
 }
