@@ -15,7 +15,7 @@ $options = [
 {% endif %}
 {% endfor %}
 {% if postType.hasMeta %}
-    'register_meta_box_cb' => '{{postType.theme.id}}_{{postType.id}}_meta_boxes',
+    'register_meta_box_cb' => '{{ postType.theme.id }}_{{ postType.id }}_meta_boxes',
 {% endif %}
     'labels' => $labels
 ];
@@ -23,34 +23,28 @@ $options = [
 register_post_type('{{postType.slug}}', $options);
 
 {% if 'excerpt' in postType.settings.supports %}
-add_post_type_support('{{postType.slug}}', 'excerpt');
+add_post_type_support('{{ postType.slug }}', 'excerpt');
 {% endif %}
 
 {% if postType.hasMeta %}
-function {{postType.theme.id}}_{{postType.id}}_meta_boxes()
+function {{ postType.theme.id }}_{{ postType.id }}_meta_boxes()
 {
 {% for meta in postType.metas %}
-    add_meta_box('{{postType.id}}_{{meta.id}}', '{{meta.name}}', '{{postType.theme.id}}_{{postType.id}}_{{meta.id}}_box', '{{postType.slug}}', '{{meta.settings.position}}', 'default');
+    add_meta_box('{{ postType.id }}_{{ meta.id }}', '{{ meta.name }}', '{{ postType.theme.id }}_{{ postType.id }}_{{ meta.id }}_box', '{{ postType.slug }}', '{{ meta.settings.position }}', 'default');
 {% endfor %}
 }
 
 {% for meta in postType.metas %}
-function {{postType.theme.id}}_{{postType.id}}_{{meta.id}}_box($post)
+function {{ postType.theme.id }}_{{ postType.id }}_{{ meta.id }}_box($post)
 {
-{% if meta.settings.type == 'string' %}{{ include('Partials/meta-string-show.twig') }}
-{% elseif meta.settings.type == 'key_value' %}{{ include('Partials/meta-key-value-show.twig') }}
-{% elseif meta.settings.type == 'select' %}{{ include('Partials/meta-select-show.twig') }}
-{% endif %}
+{{ include('Partials/meta-'~ meta.settings.type ~'-show.twig') }}
 }
 
 {% endfor %}
 {% endif %}
-function {{postType.theme.id}}_{{postType.id}}_save($post_id)
+function {{ postType.theme.id }}_{{ postType.id }}_save($post_id)
 {
 {% for meta in postType.metas %}
-{% if meta.settings.type == 'string' %}{{ include('Partials/meta-string-save.twig') }}
-{% elseif meta.settings.type == 'key_value' %}{{ include('Partials/meta-key-value-save.twig') }}
-{% elseif meta.settings.type == 'select' %}{{ include('Partials/meta-select-save.twig') }}
-{% endif %}
+{{ include('Partials/meta-'~ meta.settings.type ~'-save.twig') }}
 {% endfor %}
 }

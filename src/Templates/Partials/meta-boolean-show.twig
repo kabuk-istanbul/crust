@@ -1,0 +1,3 @@
+    $meta = get_post_meta($post->ID, '{{ meta.id }}', true);
+    $checked = $meta ? 'checked ' : '';
+    echo '<label style="width: 100%;"><input name="{{ postType.slug }}[{{ meta.slug }}]" type="checkbox" value="{{ meta.id }}"' . $checked . ' /> {{ meta.name }}</label>';
