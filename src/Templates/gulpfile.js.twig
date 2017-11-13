@@ -27,6 +27,7 @@ function build(watch, callback) {
 
 gulp.task('css', function () {
   gulp.src('./src/style/style.{{ settings.css_preprocessor_extension }}')
+    .pipe({{ settings.css_preprocessor }}())
     .pipe(uglifyCSS())
     .pipe(gulp.dest('./'));
 });
