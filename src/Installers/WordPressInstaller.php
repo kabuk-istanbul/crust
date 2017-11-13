@@ -3,7 +3,6 @@
 namespace Crust\Installers;
 
 use Crust\Crust;
-use Crust\Helpers\Filesystem;
 use ZipArchive;
 
 class WordPressInstaller extends Installer implements InstallerInterface {
@@ -11,7 +10,7 @@ class WordPressInstaller extends Installer implements InstallerInterface {
     protected $progressBar;
     protected $currentStep = 0;
 
-    public function __construct(Crust $crust)
+    public function __construct(Crust $crust, $settings = [])
     {
         parent::__construct($crust);
     }

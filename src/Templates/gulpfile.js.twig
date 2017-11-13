@@ -1,36 +1,51 @@
+const path = require('path');
 const gulp = require('gulp');
+const webpack = require('webpack');
+const {{ settings.css_preprocessor }} = require('gulp-{{ settings.css_preprocessor }}');
 const uglifyCSS = require('gulp-uglifycss');
-const uglify = require('gulp-uglify');
-const webpack = require('webpack-stream');
-const {{theme.settings.front_end_tools.css_preprocessor}} = require('gulp-{{theme.settings.front_end_tools.css_preprocessor}}');
 
-gulp.task('{{theme.settings.front_end_tools.css_preprocessor}}', function () {
-	return gulp.src('./src/{{theme.settings.front_end_tools.css_preprocessor_file_extension}}/style.{{theme.settings.front_end_tools.css_preprocessor_file_extension}}')
-		.pipe({{theme.settings.front_end_tools.css_preprocessor}}())
-		.pipe(uglifyCSS())
-		.pipe(gulp.dest('./'));
+function build(watch, callback) {
+  var plugins = [
+    new webpack.NamedModulesPlugin(),
+    new webpack.optimize.UglifyJsPlugin()
+  ];
+
+  webpack({
+    plugins: plugins,
+    cache: true,
+    watch: true,
+    devtool: "#source-map",
+    entry: path.resolve(__dirname, 'src/js/theme.js'),
+    output: {
+      filename: 'theme.js',
+      path: path.resolve(__dirname)
+    }
+  }, function (err, stats) {
+    if (err) console.log(err, stats);
+  });
+}
+
+gulp.task('css', function () {
+  gulp.src('./src/style/style.{{ settings.css_preprocessor_extension }}')
+    .pipe(uglifyCSS())
+    .pipe(gulp.dest('./'));
 });
 
-gulp.task('js', function () {
-	gulp.src('./src/js/theme.js')
-		.pipe(webpack(require('./webpack.config.js')))
-		.pipe(uglify())
-		.pipe(gulp.dest('./js'));
+gulp.task('js', function (callback) {
+  build(true, callback);
 });
 
-gulp.task('images', function () {
-	gulp.src('./src/img/**/*')
-		.pipe(gulp.dest('./img'));
+gulp.task('images', function (callback) {
+  gulp.src('./src/img/**/*')
+    .pipe(gulp.dest('./img'));
 });
 
-gulp.task('fonts', function () {
-	gulp.src('./src/font/**/*')
-		.pipe(gulp.dest('./font'));
+gulp.task('fonts', function (callback) {
+  gulp.src('./src/font/**/*')
+    .pipe(gulp.dest('./font'));
 });
 
-gulp.task('default', ['{{theme.settings.front_end_tools.css_preprocessor}}',  'js', 'images', 'fonts'], function () {
-	gulp.watch('src/{{theme.settings.front_end_tools.css_preprocessor_file_extension}}/**/*', ['{{theme.settings.front_end_tools.css_preprocessor}}']);
-	gulp.watch('src/js/**/*', ['js']);
-	gulp.watch('src/img/**/*', ['images']);
-	gulp.watch('src/fonts/**/*', ['fonts']);
-});
+gulp.task('default', ['js', 'css', 'images', 'fonts']);
+gulp.watch('./src/style/**/*', ['css']);
+gulp.watch('./src/img/**/*', ['images']);
+gulp.watch('./src/font/**/*', ['fonts']);

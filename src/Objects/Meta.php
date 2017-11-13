@@ -21,7 +21,8 @@ class Meta extends Base
             'single' => true,
             'position' => 'advanced',
             'has_column' => false,
-            'source' => null
+            'source' => null,
+            'description' => null
         ];
 
         $this->settings = array_replace_recursive($defaultSettings, $settings);

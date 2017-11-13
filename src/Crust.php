@@ -65,6 +65,10 @@ class Crust {
         });
         $this->renderer->addFilter($var);
 
+        $test = new \Twig_Test('array', function ($value) {
+            return is_array($value);
+        });
+        $this->renderer->addTest($test);
         $test = new \Twig_Test('post_type', function ($value) {
             return $value instanceof PostType;
         });

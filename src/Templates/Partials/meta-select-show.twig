@@ -21,4 +21,24 @@
     $html .= '</select>';
     echo $html;
 {% endif %}
+{% elseif meta.settings.source is array %}
+    $meta = get_post_meta($post->ID, '{{meta.id}}', {{meta.isSingle|var}});
+    $source = array(
+{% for key, value in meta.settings.source %}
+        '{{ key }}' => '{{ value }}',
+{% endfor %}
+    );
+{% if meta.isSingle %}
+    $html = '<select name="{{postType.slug}}[{{meta.slug}}]" style="width: 100%;">';
+    foreach ($source as $key => $value) {
+        if ($key == $meta) {
+            $html .= '<option value="' . $key . '" selected="selected">' . $value . '</option>';
+        }
+        else {
+            $html .= '<option value="' . $key . '">' . $value . '</option>';
+        }
+    }
+    $html .= '</select>';
+    echo $html;
+{% endif %}
 {% endif %}
