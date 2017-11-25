@@ -100,20 +100,4 @@ class PostType extends Base
             'menu_name' => $pluralName
         ];
     }
-
-    /*
-
-
-
-
-
-
-
-
-
-
-
-
-
-    */
 }

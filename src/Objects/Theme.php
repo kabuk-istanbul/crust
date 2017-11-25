@@ -12,6 +12,7 @@ class Theme extends Base
     protected $postTypes = [];
     protected $taxonomies = [];
     protected $languages = [];
+    protected $texts = [];
 
     function __construct(Crust $crust, $name, $settings)
     {
@@ -27,6 +28,10 @@ class Theme extends Base
 
     private function initSettings($settings = [])
     {
+        $this->texts[] = 'Main Menu';
+        $this->texts[] = 'Social Links Menu';
+        $this->texts[] = 'Footer Menu';
+
         $defaultSettings = [
             'languages' => ['en']
         ];
@@ -48,6 +53,10 @@ class Theme extends Base
         if (!$this->hasPostType($postType->id)) {
             $this->postTypes[] = $postType;
             $postType->theme = $this;
+
+            foreach ($postType->labels() as $label) {
+                $this->addText($label);
+            }
 
             $taxonomies = $postType->taxonomies();
             foreach ($taxonomies as $taxonomy) {
@@ -79,6 +88,10 @@ class Theme extends Base
             $this->taxonomies[] = $taxonomy;
             $taxonomy->theme = $this;
 
+            foreach ($taxonomy->labels() as $label) {
+                $this->addText($label);
+            }
+
             $postTypes = $taxonomy->postTypes();
             foreach ($postTypes as $postType) {
                 $this->addPostType($postType);
@@ -108,7 +121,7 @@ class Theme extends Base
         $this->createThemeFiles();
         $this->createPostTypeFiles();
         $this->createTaxonomyFiles();
-        //$this->createLanguageFiles();
+        $this->createLanguageFiles();
         return $this;
     }
 
@@ -165,38 +178,24 @@ class Theme extends Base
         }
     }
 
-    /*
-
-    public function collectTranslationTexts()
+    public function addText($text)
     {
-        $translationTexts = [
-            'Main Menu',
-            'Social Links Menu',
-            'Footer Menu'
-        ];
-
-        foreach ($this->postTypes as $id => $postType) {
-            foreach ($postType->labels() as $label) {
-                $translationTexts[] = $label;
-            }
+        if (!in_array($text, $this->texts)) {
+            $this->texts[] = $text;
         }
+    }
 
-        foreach ($this->taxonomies as $id => $taxonomy) {
-            foreach ($taxonomy->labels() as $label) {
-                $translationTexts[] = $label;
-            }
-        }
-
-        return $translationTexts;
+    public function texts()
+    {
+        return $this->texts;
     }
 
     private function createLanguageFiles()
     {
-        $translationTexts = $this->collectTranslationTexts();
-
+        $this->crust->fs->dir($this->dir() . '/languages');
         foreach ($this->languages() as $language) {
-            $languageFile = new LanguageFile($this->slug, $language, $translationTexts);
-            $languageFile->create();
+            $file = $language . '_' . strtoupper($language) . '.po';
+            $this->crust->renderFile($this->dir() . '/languages/' . $file, ['theme' => $this, 'language' => $language], 'lang.po.twig');
         }
-    }*/
+    }
 }

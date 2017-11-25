@@ -73,6 +73,8 @@ class ThemeTest extends TestCase {
         $this->assertTrue(file_exists($theme->dir() . '/inc/taxonomy-custom-taxonomy.php'));
         $this->assertTrue(file_exists($theme->dir() . '/taxonomy-custom-taxonomy.php'));
 
+        $this->assertTrue(file_exists($theme->dir() . '/languages/en_EN.po'));
+
         $crust->fs->remove($crust->wpDir);
     }
 
@@ -96,5 +98,24 @@ class ThemeTest extends TestCase {
         $this->assertEquals($theme, $result);
         $this->assertTrue($theme->hasTaxonomy('Custom Taxonomy'));
         $this->assertEquals(1, count($theme->taxonomies()));
+    }
+
+    public function testTranslationTextMethods()
+    {
+        $crust = $this->createCrust();
+        $theme = new Theme($crust, 'Test Theme', []);
+        $count = count($theme->texts());
+        $theme->addText('Test');
+        $this->assertEquals('Test', $theme->texts()[$count]);
+
+        $postType = $crust->postType('Post Type', []);
+        $theme->addPostType($postType);
+        $count = count($theme->texts()) - 1;
+        $this->assertEquals('Uploaded to this Post Type', $theme->texts()[$count]);
+
+        $taxonomy = $crust->taxonomy('Custom Taxonomy', []);
+        $theme->addTaxonomy($taxonomy);
+        $count = count($theme->texts()) - 1;
+        $this->assertEquals('No Custom Taxonomies found.', $theme->texts()[$count]);
     }
 }
