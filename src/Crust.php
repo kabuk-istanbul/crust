@@ -4,8 +4,10 @@ namespace Crust;
 
 use Crust\Helpers\Filesystem;
 use Crust\Objects\Meta;
+use Crust\Objects\OptionGroup;
 use Crust\Objects\Page;
 use Crust\Objects\PostType;
+use Crust\Objects\Option;
 use Crust\Objects\Taxonomy;
 use Crust\Objects\Theme;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
@@ -160,5 +162,15 @@ class Crust {
     public function meta($name, $settings = [])
     {
         return new Meta($name, $settings);
+    }
+
+    public function option($name, $settings = [])
+    {
+        return new Option($name, $settings);
+    }
+
+    public function optionGroup($name, $title = null)
+    {
+        return new OptionGroup($name, $title);
     }
 }

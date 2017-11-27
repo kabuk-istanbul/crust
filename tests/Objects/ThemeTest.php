@@ -100,6 +100,19 @@ class ThemeTest extends TestCase {
         $this->assertEquals(1, count($theme->taxonomies()));
     }
 
+    public function testOptionMethods()
+    {
+        $crust = $this->createCrust();
+        $theme = new Theme($crust, 'Test Theme', []);
+        $option = $crust->option('Custom Option', []);
+        $result = $theme->addOption($option);
+        $this->assertEquals($theme, $result);
+        $this->assertEquals(1, count($theme->options()[0]));
+        $optionGroup = new OptionGroup('Option Group');
+        $theme->addOptionGroup($optionGroup);
+        $this->assertEquals(2, count($theme->options()));
+    }
+
     public function testTranslationTextMethods()
     {
         $crust = $this->createCrust();

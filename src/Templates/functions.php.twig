@@ -92,10 +92,10 @@ function {{theme.id}}_disable_wp_emojicons()
 
 function {{theme.id}}_create_menu()
 {
-    add_menu_page('{{theme.name}} Settings', 'Settings', 'administrator', __FILE__, '{{theme.id}}_settings_page');
+    add_menu_page('Custom Settings', __('Custom Settings', '{{ theme.slug }}'), 'administrator', __FILE__, '{{theme.id}}_settings_page');
 }
 
 function {{theme.id}}_settings_page()
 {
-    echo 'sdsad';
+    require_once get_template_directory() . '/inc/options.php';
 }

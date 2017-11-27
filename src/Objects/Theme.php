@@ -13,11 +13,13 @@ class Theme extends Base
     protected $taxonomies = [];
     protected $languages = [];
     protected $texts = [];
+    protected $options = [];
 
     function __construct(Crust $crust, $name, $settings)
     {
         parent::__construct($name);
         $this->crust = $crust;
+        $this->options[] = new OptionGroup('default');
         $this->initSettings($settings);
     }
 
@@ -159,35 +161,24 @@ class Theme extends Base
         $this->crust->renderFile($this->dir() . '/index.php', ['theme' => $this]);
         $this->crust->renderFile($this->dir() . '/style.css', ['theme' => $this]);
         $this->crust->renderFile($this->dir() . '/theme.js', ['theme' => $this]);
+        $this->crust->renderFile($this->dir() . '/inc/options.php', ['theme' => $this]);
     }
 
     private function createPostTypeFiles()
     {
         foreach ($this->postTypes as $id => $postType) {
-            $this->crust->renderFile($this->dir() . '/single-' . $postType->slug . '.php', array('postType' => $postType), 'single-post-type.php.twig');
-            $this->crust->renderFile($this->dir() . '/archive-' . $postType->slug . '.php', array('postType' => $postType), 'archive-post-type.php.twig');
-            $this->crust->renderFile($this->dir() . '/inc/post-type-' . $postType->slug . '.php', array('postType' => $postType), 'register-post-type.php.twig');
+            $this->crust->renderFile($this->dir() . '/single-' . $postType->slug . '.php', ['postType' => $postType], 'single-post-type.php.twig');
+            $this->crust->renderFile($this->dir() . '/archive-' . $postType->slug . '.php', ['postType' => $postType], 'archive-post-type.php.twig');
+            $this->crust->renderFile($this->dir() . '/inc/post-type-' . $postType->slug . '.php', ['postType' => $postType], 'register-post-type.php.twig');
         }
     }
 
     private function createTaxonomyFiles()
     {
         foreach ($this->taxonomies as $taxonomy) {
-            $this->crust->renderFile($this->dir() . '/inc/taxonomy-' . $taxonomy->slug . '.php', array('taxonomy' => $taxonomy), 'register-taxonomy.php.twig');
-            $this->crust->renderFile($this->dir() . '/taxonomy-' . $taxonomy->slug . '.php', array('taxonomy' => $taxonomy), 'taxonomy-custom.php.twig');
+            $this->crust->renderFile($this->dir() . '/inc/taxonomy-' . $taxonomy->slug . '.php', ['taxonomy' => $taxonomy], 'register-taxonomy.php.twig');
+            $this->crust->renderFile($this->dir() . '/taxonomy-' . $taxonomy->slug . '.php', ['taxonomy' => $taxonomy], 'taxonomy-custom.php.twig');
         }
-    }
-
-    public function addText($text)
-    {
-        if (!in_array($text, $this->texts)) {
-            $this->texts[] = $text;
-        }
-    }
-
-    public function texts()
-    {
-        return $this->texts;
     }
 
     private function createLanguageFiles()
@@ -197,5 +188,44 @@ class Theme extends Base
             $file = $language . '_' . strtoupper($language) . '.po';
             $this->crust->renderFile($this->dir() . '/languages/' . $file, ['theme' => $this, 'language' => $language], 'lang.po.twig');
         }
+    }
+
+    public function addText($text)
+    {
+        if (!in_array($text, $this->texts)) {
+            $this->texts[] = $text;
+        }
+        return $this;
+    }
+
+    public function addTexts(array $texts)
+    {
+        foreach ($texts as $text) {
+            $this->addText($text);
+        }
+        return $this;
+    }
+
+    public function texts()
+    {
+        return $this->texts;
+    }
+
+    public function addOption(Option $option)
+    {
+        $this->options[0]->addOption($option);
+        $this->addText($option->settings('title'));
+        return $this;
+    }
+
+    public function addOptionGroup(OptionGroup $optionGroup)
+    {
+        $this->options[] = $optionGroup;
+        return $this;
+    }
+
+    public function options()
+    {
+        return $this->options;
     }
 }

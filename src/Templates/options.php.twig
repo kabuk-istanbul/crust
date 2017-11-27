@@ -1,0 +1,32 @@
+<div class="wrap">
+  <h1><?php echo __('Theme Settings', '{{ theme.slug }}'); ?></h1>
+  <form action="" method="post">
+    {% for group in theme.options %}
+    {% if group.id != 'default' %}<h2 class="title">{{ group.title }}</h2>{% endif %}
+    <table class="form-table">
+      <tbody>
+    {% for option in group.options %}
+    <?php
+    if (!empty($_POST['options']['{{ option.id }}'])) {
+      update_option('{{ theme.id }}_{{ option.id }}', $_POST['options']['{{ option.id }}']);
+    }
+    $option = get_option('{{ theme.id }}_{{ option.id }}', '');
+    ?>
+    <tr>
+      <th scope="row">
+        <label for="option-{{ option.slug }}">{{ option.name }}</label>
+      </th>
+      <td>
+        <input type="text" name="options[{{ option.id }}]" id="option-{{ option.slug }}" class="regular-text" value="<?php echo $option; ?>">
+        {% if option.description %}<p class="description">{{ option.description }}</p>{% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+      </tbody>
+    </table>
+    {% endfor %}
+    <p class="submit">
+      <input name="submit" id="submit" class="button button-primary" value="<?php echo __('Save'); ?>" type="submit">
+    </p>
+  </form>
+</div>

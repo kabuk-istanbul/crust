@@ -2,7 +2,7 @@
 
 namespace Crust\Objects;
 
-class Meta extends Base
+class Option extends Base
 {
     function __construct($name, $settings = [])
     {
@@ -13,19 +13,13 @@ class Meta extends Base
     function initSettings($settings)
     {
         $defaultSettings = [
-            'type' => 'string', // number, key_value, select
-            'single' => true,
-            'position' => 'advanced',
-            'has_column' => false,
+            'title' => null,
+            'type' => 'string', // number, select
             'source' => null,
             'description' => null
         ];
 
         $this->settings = array_replace_recursive($defaultSettings, $settings);
-    }
-
-    function isSingle()
-    {
-        return $this->settings['single'];
+        $this->settings['title'] = $this->settings['title'] ? $this->settings['title'] : $this->name;
     }
 }
